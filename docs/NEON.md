@@ -14,5 +14,3 @@ npm run db:status
 `neon deploy` configura el proyecto de Neon; no ejecuta migraciones del esquema. Las migraciones viven en `prisma/migrations/` y se aplican con `prisma migrate deploy` sobre la rama elegida explícitamente. Antes de cambiar producción, comprobar el destino y ensayar un respaldo y su restauración en una rama aislada.
 
 La base usa PostgreSQL estándar mediante Prisma. Referencias: [Neon CLI](https://neon.com/cli), [Prisma Migrate](https://www.prisma.io/docs/orm/prisma-migrate) y [PostgreSQL pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html).
-
-\n

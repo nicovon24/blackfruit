@@ -8,7 +8,7 @@ El acceso requiere sesión y permiso de administrador. La app permite registrar 
 
 ## Desarrollo local
 
-Requiere Node.js compatible con `package.json` y una rama de Neon separada de `production`. Copiar `.env.example` a `.env.local` y completar `DATABASE_URL` agrupada, `DATABASE_URL_UNPOOLED` directa, `BETTER_AUTH_SECRET` y `APP_URL`. Nunca subir esos valores al repositorio.
+Requiere Node.js compatible con `package.json` y una rama de Neon separada de `production`. Copiar `.env.example` a `.env.local` y completar `DATABASE_URL` agrupada, `DATABASE_URL_UNPOOLED` directa, `BETTER_AUTH_SECRET` y `APP_URL`. En producción configurar además `ALLOWED_LOGIN_EMAILS` con exactamente dos correos separados por coma; si falta, el acceso se cierra. Nunca subir esos valores al repositorio.
 
 ```bash
 npm ci
@@ -39,12 +39,11 @@ npm run build
 npm run test:auth
 npm run test:sales
 npm run test:imports
+npm run test:login-allowlist
 ```
 
-Las pruebas de integración y navegador usan una rama de desarrollo y datos QA temporales; ver los scripts de `package.json`. El modelo y los criterios de aceptación están en [el plan](docs/PLAN_IMPLEMENTACION.md) y [las especificaciones](docs/specs/).
+Las pruebas de integración y navegador usan una rama de desarrollo y datos QA temporales; ver los scripts de `package.json`. `npm run test:login-allowlist:integration` prueba inicio de sesión y revocación con Better Auth en esa rama. El modelo y los criterios de aceptación están en [el plan](docs/PLAN_IMPLEMENTACION.md) y [las especificaciones](docs/specs/).
 
 ## Privacidad
 
 Este repositorio público contiene código y documentación genérica. El prototipo de `design/`, la planilla de origen, los respaldos, las credenciales y los datos reales de ventas permanecen fuera de Git. Las rutas privadas verifican sesión y permiso en el servidor.
-
-\n
