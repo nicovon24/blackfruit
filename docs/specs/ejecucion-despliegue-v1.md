@@ -26,8 +26,10 @@ La persona administradora ejecuta BlackFruit localmente, comprueba el acceso pri
 - [x] `docker compose up --build -d` deja la app saludable en `http://localhost:3000/login`.
 - [x] `/dashboard` redirige sin sesión y una sesión administrativa puede consultar datos de la rama de desarrollo.
 - [x] El estado de migraciones de desarrollo coincide con los archivos versionados.
-- [ ] Antes de producción: migraciones, respaldo/restauración y acceso administrativo se prueban con datos y secretos del entorno definitivo.
+- [x] Las cuatro migraciones y el acceso administrativo están provisionados en Neon `production`.
+- [ ] Probar una restauración completa en rama aislada antes de cargar ventas reales.
+- [ ] Desplegar en Vercel con variables cifradas y comprobar login y rutas privadas en la URL definitiva.
 
 ## Estado comprobado el 6 de octubre de 2026
 
-Docker ejecuta la aplicación localmente contra `dev/blackfruit`; Chrome completó dos veces el recorrido de login, ventas, clientes e importación. Las cuatro migraciones están aplicadas en desarrollo. `production` aún no tiene el esquema de la aplicación. El repositorio local no tiene remoto Git ni vínculo `.vercel`. Faltan configurar el destino de despliegue, variables y dominio definitivos, migrar y provisionar la base de producción, y ensayar respaldo/restauración. Recuperación por email, alta manual de líneas y catálogo siguen pendientes del alcance de uso cotidiano.
+Docker ejecutó la aplicación localmente contra `dev/blackfruit`; Chrome completó dos veces el recorrido de login, ventas, clientes e importación. Las cuatro migraciones están aplicadas en desarrollo y `production`; en esta última se provisionó una cuenta administradora. Se creó un snapshot previo al esquema. El plan actual de Neon impidió crear un segundo snapshot para ensayar la restauración del esquema nuevo. El repositorio público se publicó sin archivos privados y el proyecto Vercel está creado. Falta conectar las credenciales de Neon a Vercel, desplegar y comprobar el acceso en línea. Recuperación por email, alta manual de líneas y catálogo siguen pendientes del uso cotidiano.

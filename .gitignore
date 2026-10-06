@@ -16,4 +16,5 @@ tmp/
 design/
 .impeccable/
 .codex/
+.vercel/
 debug.log
