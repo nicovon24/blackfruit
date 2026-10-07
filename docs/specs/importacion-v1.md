@@ -15,6 +15,7 @@ La entrada habitual es el botón «Importar Excel» del dashboard, que abre el m
 - Las muestras quedan conservadas como registros de origen clasificados; sin tabla/vista independiente por ahora. Filas inválidas se corrigen en el archivo o se excluyen expresamente.
 - Una muestra revisada puede tener importe cero. Se conserva como procedencia clasificada, suma una muestra al resumen y no crea una venta ni aumenta ingresos. Las ventas siguen requiriendo un importe positivo.
 - En la revisión se puede excluir una fila u operación agrupada mediante «Borrar fila»; conserva su origen como excluida. También se puede indicar un monto positivo corregido para una venta, incluso si el archivo dice cero. Esa operación se guarda como venta por importe, sin líneas de producto; las líneas y valores originales quedan en la procedencia. La corrección no cambia el archivo ni las demás operaciones.
+- El primer paso del asistente ofrece «Descargar archivo de ejemplo (CSV)» (`public/ejemplo-importacion.csv`): perfil por importe con columnas Fecha, Nombre y Total, datos ficticios y sin errores. Es un archivo público; nunca debe contener datos reales.
 - Nombres de origen no crean identidades automáticamente. El usuario puede vincular un cliente existente o conservar el nombre sin vínculo.
 
 ## Persistencia y garantías
