@@ -18,6 +18,7 @@
     "auth:admin:create": "node --env-file=.env.local node_modules/auth/dist/index.mjs create-admin --config ./src/lib/auth.ts",
     "test:auth": "node --import tsx tests/auth-permissions.test.ts",
     "test:login-allowlist": "node --import tsx tests/login-allowlist.test.ts",
+    "test:auth-hosts": "node --import tsx tests/auth-hosts.test.ts",
     "test:login-allowlist:integration": "node --env-file=.env.local --import tsx tests/login-allowlist-integration.ts",
     "test:sales": "node --import tsx tests/sales-domain.test.ts",
     "test:integration": "node --env-file=.env.local --import tsx tests/auth-integration.ts",

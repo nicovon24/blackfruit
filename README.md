@@ -8,7 +8,7 @@ El acceso requiere sesión y permiso de administrador. La app permite registrar 
 
 ## Desarrollo local
 
-Requiere Node.js compatible con `package.json` y una rama de Neon separada de `production`. Copiar `.env.example` a `.env.local` y completar `DATABASE_URL` agrupada, `DATABASE_URL_UNPOOLED` directa, `BETTER_AUTH_SECRET` y `APP_URL`. En producción configurar además `ALLOWED_LOGIN_EMAILS` con exactamente dos correos separados por coma; si falta, el acceso se cierra. Nunca subir esos valores al repositorio.
+Requiere Node.js compatible con `package.json` y una rama de Neon separada de `production`. Copiar `.env.example` a `.env.local` y completar `DATABASE_URL` agrupada, `DATABASE_URL_UNPOOLED` directa y `BETTER_AUTH_SECRET`. La URL pública se obtiene de cada solicitud y los dominios de Vercel se toman de sus variables del sistema; no hay que configurar `APP_URL`. En producción configurar además `ALLOWED_LOGIN_EMAILS` con exactamente dos correos separados por coma; si falta, el acceso se cierra. Nunca subir esos valores al repositorio.
 
 ```bash
 npm ci
@@ -17,7 +17,7 @@ npm run db:generate
 npm run dev
 ```
 
-La app queda en `http://localhost:3000`. Las migraciones se aplican por separado con `npx prisma migrate deploy`; `neon deploy` configura Neon y no migra tablas.
+La app queda en `http://localhost:3000`. El puerto se puede cambiar con `npm run dev -- -p 3100`. Las migraciones se aplican por separado con `npx prisma migrate deploy`; `neon deploy` configura Neon y no migra tablas.
 
 ## Docker
 
@@ -29,6 +29,8 @@ docker compose ps
 ```
 
 El contenedor sirve Next.js en el puerto 3000 y usa la base remota indicada por las variables de entorno. `design/` y los archivos locales de credenciales quedan fuera de la imagen.
+
+Para publicar otro puerto local en PowerShell: `$env:BLACKFRUIT_PORT=3100; docker compose up -d`. La app reconoce `localhost` con ese puerto sin configurar una URL.
 
 ## Verificación
 

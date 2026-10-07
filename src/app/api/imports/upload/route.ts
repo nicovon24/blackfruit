@@ -4,6 +4,19 @@ import { ImportValidationError } from "@/modules/imports/domain/import-types";
 
 export const runtime = "nodejs";
 
+function hasSameOrigin(request: Request) {
+  const origin = request.headers.get("origin");
+  const host = request.headers.get("host");
+  const protocol = request.headers.get("x-forwarded-proto") ?? new URL(request.url).protocol.slice(0, -1);
+  if (!origin || !host || !/^(http|https)$/.test(protocol)) return false;
+  try {
+    const parsedOrigin = new URL(origin);
+    return parsedOrigin.origin === origin && parsedOrigin.host.toLowerCase() === host.toLowerCase() && parsedOrigin.protocol === `${protocol}:`;
+  } catch {
+    return false;
+  }
+}
+
 async function limitedFormData(request: Request) {
   const reader = request.body?.getReader();
   if (!reader) throw new ImportValidationError("Elegí un archivo.");
@@ -21,8 +34,7 @@ async function limitedFormData(request: Request) {
 export async function POST(request: Request) {
   try {
     const actor = await requirePermission("imports:write");
-    const origin = request.headers.get("origin");
-    if (!origin || origin !== new URL(process.env.APP_URL!).origin) return Response.json({ error: "Origen no permitido." }, { status: 403 });
+    if (!hasSameOrigin(request)) return Response.json({ error: "Origen no permitido." }, { status: 403 });
     if (Number(request.headers.get("content-length")) > 2.2 * 1024 * 1024) return Response.json({ error: "El archivo supera 2 MB." }, { status: 413 });
     const form = await limitedFormData(request);
     const file = form.get("file");

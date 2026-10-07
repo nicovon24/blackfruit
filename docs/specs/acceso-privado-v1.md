@@ -13,6 +13,7 @@ La persona administradora provisionada inicia sesión, accede al CRM y recupera 
 - El rol inicial es `admin`. La comprobación de permisos ocurre en el servidor en cada lectura, Action y Route Handler; ocultar un botón no concede seguridad.
 - La recuperación envía un enlace de un solo uso al email de la cuenta existente. La aplicación no debe revelar si un email está registrado.
 - Secretos, URL de base y credenciales de correo se configuran por entorno. `production` y `dev/blackfruit` usan secretos y conexiones distintos.
+- El origen de la app se determina por solicitud y se valida contra hosts permitidos; no se configura `APP_URL`. Ver [ejecución y despliegue](ejecucion-despliegue-v1.md).
 - La lista de dos correos autorizados y la revocación de sesiones se detallan en [acceso limitado a dos correos](acceso-dos-correos-v1.md).
 
 ## Aceptación

@@ -2,19 +2,19 @@ import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
 import { auth } from "../src/lib/auth";
 import { prisma } from "../src/lib/prisma";
+import { authRequestHeaders } from "./test-origin";
 
 if (process.env.NEON_BRANCH !== "dev/blackfruit") {
   throw new Error("Esta prueba solo puede usar dev/blackfruit.");
 }
 
-const baseURL = process.env.APP_URL ?? "http://localhost:3000";
 const initialAllowlist = process.env.ALLOWED_LOGIN_EMAILS;
 const users: { id: string; email: string; password: string }[] = [];
 
 async function signIn(email: string, password: string) {
   return auth.api.signInEmail({
     body: { email, password },
-    headers: new Headers({ origin: baseURL }),
+    headers: authRequestHeaders(),
     asResponse: true,
   });
 }
@@ -45,7 +45,7 @@ async function main() {
     assert.notEqual((await signIn(unprovisionedEmail, users[0].password)).status, 200);
     process.env.ALLOWED_LOGIN_EMAILS = `${users[0].email},${users[1].email}`;
 
-    await assert.rejects(auth.api.getSession({ headers: new Headers({ cookie }), asResponse: true }));
+    await assert.rejects(auth.api.getSession({ headers: authRequestHeaders(cookie), asResponse: true }));
     await assert.rejects(auth.api.createUser({
       body: { email: `outside-qa-${randomUUID()}@example.invalid`, password: `${randomBytes(24).toString("base64url")}Aa1!`, name: "Outside QA", role: "admin" },
     }));

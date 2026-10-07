@@ -7,12 +7,13 @@ import { moveSaleToTrash, restoreSale, SaleConflictError, updateAmountSale, void
 import { prismaAmountSaleWriter } from "../src/modules/sales/infrastructure/prisma-amount-sale-writer";
 import { currentBusinessMonth, getSalesSummary, getSalesBreakdown, listSales } from "../src/modules/sales/infrastructure/prisma-sale-queries";
 import { prismaSaleMutator } from "../src/modules/sales/infrastructure/prisma-sale-mutator";
+import { testOrigin } from "./test-origin";
 
 if (process.env.NEON_BRANCH !== "dev/blackfruit") {
   throw new Error("La prueba de integración solo puede ejecutarse en dev/blackfruit.");
 }
 
-const baseUrl = process.env.APP_URL ?? "http://localhost:3000";
+const baseUrl = testOrigin;
 const createdIds: string[] = [];
 const createdSaleIds: string[] = [];
 
@@ -54,6 +55,15 @@ async function checkRole(role: "admin" | "user", expectedLocation?: string) {
 
   assert.equal(dashboard.status, 200);
   assert.ok((await dashboard.text()).includes("Resumen del negocio"));
+
+  const foreignUpload = await fetch(`${baseUrl}/api/imports/upload`, {
+    method: "POST", headers: { cookie, origin: "http://foreign.invalid" },
+  });
+  assert.equal(foreignUpload.status, 403);
+  const sameOriginUpload = await fetch(`${baseUrl}/api/imports/upload`, {
+    method: "POST", headers: { cookie, origin: baseUrl },
+  });
+  assert.equal(sameOriginUpload.status, 400, await sameOriginUpload.text());
 
   const month = currentBusinessMonth();
   const before = await getSalesSummary(month);

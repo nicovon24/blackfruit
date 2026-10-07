@@ -11,7 +11,6 @@ ENV BUILD_STANDALONE=1
 RUN DATABASE_URL=postgresql://build:build@localhost:5432/build \
     DATABASE_URL_UNPOOLED=postgresql://build:build@localhost:5432/build \
     BETTER_AUTH_SECRET=build-only-secret-with-thirty-two-characters \
-    APP_URL=http://localhost:3000 \
     npm run build
 
 FROM node:24-bookworm-slim AS runner

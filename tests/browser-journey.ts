@@ -4,6 +4,7 @@ import { mkdir } from "node:fs/promises";
 import { chromium } from "playwright-core";
 import { auth } from "../src/lib/auth";
 import { prisma } from "../src/lib/prisma";
+import { testOrigin } from "./test-origin";
 
 if (process.env.NEON_BRANCH !== "dev/blackfruit") {
   throw new Error("La prueba de navegador solo puede ejecutarse en dev/blackfruit.");
@@ -29,7 +30,7 @@ async function main() {
     userId = created.user.id;
     await mkdir("tmp", { recursive: true });
 
-    await page.goto(`${process.env.APP_URL}/login`);
+    await page.goto(`${testOrigin}/login`);
     await page.screenshot({ caret: "initial", path: "tmp/qa-login-desktop.png" });
     await page.getByLabel("Email").focus();
     await page.keyboard.press("Tab");
@@ -69,7 +70,7 @@ async function main() {
     await page.getByRole("img", { name: "Importe diario" }).waitFor();
     await page.screenshot({ caret: "initial", path: "tmp/qa-dashboard-populated-mobile.png", fullPage: true });
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(`${process.env.APP_URL}/ventas`);
+    await page.goto(`${testOrigin}/ventas`);
     await page.getByRole("textbox", { name: "Buscar ventas" }).fill("no-existe-qa");
     await page.getByText("No encontramos ventas").waitFor();
     await page.getByRole("textbox", { name: "Buscar ventas" }).fill(customerName);
@@ -100,11 +101,11 @@ async function main() {
     await qaTrashedSale.getByRole("button", { name: "Restaurar" }).click();
     await qaTrashedSale.waitFor({ state: "hidden" });
     assert.ok(page.url().endsWith("/ventas/papelera"));
-    await page.goto(`${process.env.APP_URL}/ventas`);
+    await page.goto(`${testOrigin}/ventas`);
     await page.getByRole("textbox", { name: "Buscar ventas" }).fill(customerName);
     await page.getByRole("table").getByText("Anulada", { exact: true }).waitFor();
 
-    await page.goto(`${process.env.APP_URL}/dashboard`);
+    await page.goto(`${testOrigin}/dashboard`);
     assert.equal(await page.getByRole("navigation", { name: "Navegación principal" }).getByRole("link", { name: "Importar" }).count(), 0);
     await page.getByRole("button", { name: "Importar Excel" }).click();
     await page.getByRole("dialog", { name: "Importar ventas" }).waitFor();
@@ -129,7 +130,7 @@ async function main() {
     await page.getByRole("button", { name: "Importar Excel" }).click();
     await page.getByText("Últimas importaciones confirmadas (1)").waitFor();
 
-    await page.goto(`${process.env.APP_URL}/dashboard`);
+    await page.goto(`${testOrigin}/dashboard`);
     assert.equal(await page.locator(".app-topbar").getByRole("button", { name: "Salir" }).count(), 0);
     assert.equal(await page.locator(".app-sidebar").getByRole("button", { name: "Salir" }).count(), 1);
     await page.getByRole("button", { name: "Salir" }).click();
