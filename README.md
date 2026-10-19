@@ -48,7 +48,7 @@ El corte de producción y muestras agrega pruebas de dominio en `tests/productio
 
 Para las mejoras de clientes, períodos y producción: `node --import tsx tests/production-import.test.ts`, `node --env-file=.env.local --import tsx tests/improvements-integration.ts`, `node --env-file=.env.local --import tsx tests/production-import-integration.ts` y, con la app local iniciada, `node --env-file=.env.local --import tsx tests/improvements-browser.ts`. Los ejemplos ficticios del dashboard de producción pueden cargarse de forma idempotente solo en `dev/blackfruit` con `node --env-file=.env.local --import tsx scripts/seed-production-example.ts`; fueron retirados de esa rama el 18/10/2026.
 
-Las pruebas de integración y navegador usan una rama de desarrollo y datos QA temporales; ver los scripts de `package.json`. `npm run test:login-allowlist:integration` prueba inicio de sesión y revocación con Better Auth en esa rama. El modelo y los criterios de aceptación están en [el plan](docs/PLAN_IMPLEMENTACION.md) y [las especificaciones](docs/specs/).
+Las pruebas de integración y navegador usan una rama de desarrollo y datos QA temporales; ver los scripts de `package.json`. `npm run test:login-allowlist:integration` prueba inicio de sesión y revocación con Better Auth en esa rama. El estado, los criterios generales y las verificaciones están en [CHECKLOG](docs/CHECKLOG.md) y [las especificaciones](docs/specs/).
 
 El ensayo de asociación de clientes existentes a ventas importadas se describe en [su especificación](docs/specs/migrations/002-clientes-desde-ventas-dev.md). Solo opera en `dev/blackfruit`; `npm run dev:preview-sale-customers` muestra el reporte y `npm run dev:backfill-sale-customers -- --execute` ejecuta el backfill protegido.
 

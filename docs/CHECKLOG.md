@@ -2,9 +2,9 @@
 
 El desarrollo sigue especificación, implementación de una ruta completa y verificación. Los criterios observables están en `docs/specs/`.
 
-## Próximo corte solicitado: mejoras del 18/10/2026
+## Corte de mejoras de uso y escala: 18/10/2026
 
-Ver el [corte de clientes, muestras, producción, fechas y rendimiento](PLAN_MEJORAS_2026-10-18.md). Incluye formato `dd/mm/yyyy` en fechas visibles y formularios, agenda de clientes, alta de muestras en diálogo, filtros automáticos y rangos, datos de ejemplo, importación XLSX de producción y consultas acotadas. Implementado y verificado en `dev/blackfruit`; pendiente de despliegue.
+El [registro único del plan y su resultado](revisiones/PLAN_MEJORAS_2026-10-18.md) cubre formato `dd/mm/yyyy`, agenda de clientes, alta de muestras en diálogo, períodos automáticos, importación XLSX de producción y consultas acotadas. Implementado y verificado en `dev/blackfruit`; pendiente de despliegue. La caché persistente sigue condicionada a mediciones.
 
 ## Corte en curso: clientes, productos y papelera reversible
 
@@ -19,7 +19,7 @@ Ensayo en `dev/blackfruit`: se crearon 26 clientes desde los nombres distintos d
 | Ventas | Parcial | Ventas por importe, estados, auditoría, dashboard y clientes en el flujo de ventas; faltan líneas manuales. El catálogo de productos y variantes ya se administra en la rama de producción. |
 | Importación | Implementado | XLSX/CSV, revisión, muestras, exclusiones, procedencia e idempotencia. El archivo real se confirma únicamente por decisión del administrador dentro de la app. |
 | Producción | Implementado en rama | Máquinas configurables, catálogo, ciclos, pesajes individuales y agrupados, 3D, tabla, historial, comparación y resumen. Migraciones probadas en `dev/blackfruit`; pendiente de despliegue. |
-| Producción: Dashboard y Máquina | Implementado en rama | Dos opciones dentro de Producción. Dashboard reúne resumen y tablas; Máquina integra el diseño `docs/designs/BlackFruit_3D_v2.html`, selector de equipo/ciclo, visor y editor compartido. Verificado con QA en `dev/blackfruit`; pendiente de despliegue. |
+| Producción: Dashboard y Máquina | Implementado en rama | Dos opciones dentro de Producción. Dashboard reúne resumen y tablas; Máquina integra el diseño v2, selector de equipo/ciclo, visor y editor compartido. Verificado con QA en `dev/blackfruit`; pendiente de despliegue. |
 | Muestras | Implementado en rama | Registro separado de ventas, contactos sin entrega, importación con revisión de datos incompletos y preparación de filas históricas. Migración probada en `dev/blackfruit`; pendiente de despliegue. |
 | Uso cotidiano | Pendiente | Exportación de consulta, restauración ensayada, recuperación de cuenta y QA final. |
 | Interfaz v2: Máquina primero | Parcial en rama | Entrada por Máquina, edición segura de pesajes, composición móvil y mejoras de Dashboard, Muestras, Ventas, Catálogo e Importación. Ver avance y pendientes en interfaz v2. |
@@ -47,7 +47,7 @@ Ajuste del visor solicitado el 12/10: barra con solo zoom y pantalla completa, a
 
 El visor admite deseleccionar la bandeja activa y volver a la cámara general. Pantalla completa amplía solo la máquina, con zoom y salida sobre el lienzo.
 
-El alcance detallado, los archivos afectados y los criterios de aceptación están en [Producción v1](specs/backend/006-produccion-v1.md). La referencia HTML aporta diseño e interacciones; catálogo, bandejas y pesos provienen de los datos guardados. Los resultados agrupados conservan su peso conjunto y los ciclos mantienen la configuración histórica del equipo.
+El alcance detallado, los archivos afectados y los criterios de aceptación están en [Producción v1](specs/backend/006-produccion-v1.md). La referencia visual local aporta diseño e interacciones; catálogo, bandejas y pesos provienen de los datos guardados. Los resultados agrupados conservan su peso conjunto y los ciclos mantienen la configuración histórica del equipo.
 
 La rama `dev/blackfruit` permite probar migraciones antes de aplicarlas a `production`. La URL agrupada es para la app; la directa, para migraciones. `neon deploy` solo configura Neon. Los secretos y el prototipo local quedan fuera del repositorio público.
 

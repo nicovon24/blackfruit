@@ -20,7 +20,7 @@ La producciÃ³n se registra despuÃ©s de terminar fÃ­sicamente una pasada de
 - AutorizaciÃ³n en servidor y acceso privado; nunca publicar datos reales del diseÃ±o de referencia.
 
 ## Compromisos de identidad
-Conservar la identidad existente: carbÃ³n, crema, superficies blancas, naranja tostado y oliva; marca serif. El deshidratador se basa en la referencia local `docs/designs/BlackFruit_3D_v2.html`.
+Conservar la identidad existente: carbÃ³n, crema, superficies blancas, naranja tostado y oliva; marca serif. El diseño del deshidratador sigue una referencia visual local que se mantiene fuera del repositorio.
 
 ## Principios
 Máquinas y Dashboard tienen accesos directos bajo Producción; Máquinas permite registrar ciclos y Dashboard consultar resultados. Operaciones de datos disponibles también sin 3D. Contexto de selección y consecuencias de cambios visibles; confirmación clara del guardado.

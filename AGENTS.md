@@ -1,6 +1,6 @@
 # BlackFruit: guía de trabajo
 
-BlackFruit es una aplicación privada para gestionar ventas de frutas deshidratadas. Leer `README.md`, `docs/PLAN_IMPLEMENTACION.md` y la especificación de la capacidad que se va a cambiar antes de implementar.
+BlackFruit es una aplicación privada para gestionar ventas de frutas deshidratadas. Leer `README.md`, `docs/CHECKLOG.md` y la especificación de la capacidad que se va a cambiar antes de implementar.
 
 ## Desarrollo guiado por especificaciones (SDD)
 

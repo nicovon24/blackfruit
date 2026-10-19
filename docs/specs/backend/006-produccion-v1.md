@@ -2,7 +2,7 @@
 
 **Estado: implementado en `feature/produccion-muestras-3d`; migraciones verificadas en `dev/blackfruit`.** Pendiente de despliegue y validación con medidas de la máquina real.
 
-**Actualización — 12/10/2026:** el usuario confirmó dos opciones dentro de Producción: **Dashboard** y **Máquina**. La reorganización y la adaptación del diseño de `docs/designs/BlackFruit_3D_v2.html` están implementadas en la rama de funcionalidad y verificadas con datos QA en `dev/blackfruit`. Pendientes de despliegue y de contrastar proporciones con la máquina física.
+**Actualización — 12/10/2026:** el usuario confirmó dos opciones dentro de Producción: **Dashboard** y **Máquina**. La reorganización y la adaptación del diseño de una referencia visual local están implementadas en la rama de funcionalidad y verificadas con datos QA en `dev/blackfruit`. Pendientes de despliegue y de contrastar proporciones con la máquina física.
 
 ## Actor y resultado
 
