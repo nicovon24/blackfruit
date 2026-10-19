@@ -57,21 +57,4 @@ export const prismaSaleMutator: SaleMutator = {
       deletedAt: { not: null },
     }, { deletedAt: null });
   },
-  async permanentlyDelete(id, version, actorId) {
-    await prisma.$transaction(async (tx) => {
-      const claimed = await tx.sale.updateMany({
-        where: { id, version, deletedAt: { not: null } },
-        data: { version: { increment: 1 } },
-      });
-      if (claimed.count !== 1) throw new SaleConflictError();
-      await tx.importSourceRow.updateMany({
-        where: { saleId: id },
-        data: { saleId: null, originKey: null, kind: "deleted" },
-      });
-      await tx.sale.delete({ where: { id } });
-      await tx.auditEvent.create({
-        data: { actorUserId: actorId, entityType: "sale", entityId: id, action: "permanently_deleted" },
-      });
-    });
-  },
 };

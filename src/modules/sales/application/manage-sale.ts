@@ -12,7 +12,6 @@ export interface SaleMutator {
   void(id: string, version: number, actorId: string): Promise<void>;
   moveToTrash(id: string, version: number, actorId: string): Promise<void>;
   restore(id: string, version: number, actorId: string): Promise<void>;
-  permanentlyDelete(id: string, version: number, actorId: string): Promise<void>;
 }
 
 function validVersion(version: number) {
@@ -48,9 +47,4 @@ export async function moveSaleToTrash(id: string, version: number, actorId: stri
 export async function restoreSale(id: string, version: number, actorId: string, mutator: SaleMutator) {
   validVersion(version);
   return mutator.restore(id, version, actorId);
-}
-
-export async function permanentlyDeleteSale(id: string, version: number, actorId: string, mutator: SaleMutator) {
-  validVersion(version);
-  return mutator.permanentlyDelete(id, version, actorId);
 }

@@ -47,7 +47,7 @@ export function parseImport(workbook: SourceWorkbook, config: ImportConfig): Imp
   if (!sheet || !m.source?.trim() || m.source.length > 120 || !["blackfruit", "amount", "lines"].includes(m.mode) || ![",", "."].includes(m.decimal)) throw new ImportValidationError("Revisá la fuente, hoja y formato del archivo.");
   if (!Number.isInteger(m.firstRow) || !Number.isInteger(m.lastRow) || m.firstRow < 1 || m.lastRow < m.firstRow || m.lastRow > 1000) throw new ImportValidationError("Elegí un rango de filas válido (hasta 1.000).");
   const columns = [m.date, m.name, m.total, m.notes, m.channel, m.type, m.reference, m.product, m.quantity, m.unitPrice];
-  if (columns.some((column) => !Number.isInteger(column) || column < 0 || column > 32) || !m.date || (m.mode !== "lines" && !m.total) || (m.mode === "lines" && (!m.reference || !m.product || !m.quantity || !m.unitPrice))) throw new ImportValidationError("Completá las columnas obligatorias del formato elegido.");
+  if (columns.some((column) => !Number.isInteger(column) || column < 0 || column > 32) || !m.date || (m.mode === "lines" && (!m.reference || !m.product || !m.quantity))) throw new ImportValidationError("Completá las columnas obligatorias del formato elegido.");
   if (m.mode === "blackfruit" && (!Array.isArray(m.products) || m.products.length !== 6 || m.products.some((p) => !Number.isInteger(p.column) || p.column < 1 || p.column > 32 || !p.name?.trim() || p.name.length > 160 || p.variant.length > 80))) throw new ImportValidationError("Revisá las seis columnas de productos.");
   const groups = new Map<string, SourceRow[]>();
   for (const row of sheet.rows.filter((row) => row.number >= m.firstRow && row.number <= m.lastRow)) {
@@ -57,7 +57,7 @@ export function parseImport(workbook: SourceWorkbook, config: ImportConfig): Imp
   }
   if (!groups.size) throw new ImportValidationError("No hay filas en el rango seleccionado.");
   const decisionMap = new Map(config.decisions.map((decision) => [decision.key, decision]));
-  if (decisionMap.size !== config.decisions.length || config.decisions.some((d) => !groups.has(d.key) || !["sale", "sample", "excluded"].includes(d.kind) || (d.amount !== undefined && typeof d.amount !== "string") || (d.amount?.trim() && d.kind !== "sale"))) throw new ImportValidationError("Las decisiones no corresponden a esta selección.");
+  if (decisionMap.size !== config.decisions.length || config.decisions.some((d) => !groups.has(d.key) || !["sale", "sample", "excluded"].includes(d.kind) || (d.amount !== undefined && typeof d.amount !== "string") || (d.amount?.trim() && d.kind !== "sale") || (d.sampleStatus !== undefined && !["", "pending", "delivered"].includes(d.sampleStatus)) || (d.sampleUnit !== undefined && (typeof d.sampleUnit !== "string" || d.sampleUnit.length > 40)))) throw new ImportValidationError("Las decisiones no corresponden a esta selección.");
   return [...groups].map(([key, rows]) => {
     const first = rows[0];
     const name = textAt(first, m.name);
@@ -75,7 +75,7 @@ export function parseImport(workbook: SourceWorkbook, config: ImportConfig): Imp
         throw new ImportValidationError(`Fila ${first.number}: ${error instanceof Error ? error.message : "Monto corregido inválido."}`);
       }
     }
-    const op: ImportOperation = { key, rows, name, date: "", notes: textAt(first, m.notes), channel: textAt(first, m.channel), kind: decision?.kind ?? (sample ? "sample" : "sale"), customerId: decision?.customerId ?? "", marker, lines: [], total: "0.00", amountOverride, errors: [], duplicate: false, originKeys: [], rowHashes: [] };
+    const op: ImportOperation = { key, rows, name, date: "", notes: textAt(first, m.notes), channel: textAt(first, m.channel), kind: decision?.kind ?? (sample ? "sample" : "sale"), customerId: decision?.customerId ?? "", marker, lines: [], sampleLines: [], sampleStatus: decision?.sampleStatus ?? "", sampleUnit: decision?.sampleUnit?.trim() ?? "", total: "0.00", amountOverride, errors: [], duplicate: false, originKeys: [], rowHashes: [] };
     let total = BigInt(0);
     for (const row of rows) {
       const check = <T>(field: string, fn: () => T): T | undefined => { try { return fn(); } catch (error) { op.errors.push({ row: row.number, field, message: error instanceof Error ? error.message : "Dato inválido." }); } };
@@ -93,11 +93,17 @@ export function parseImport(workbook: SourceWorkbook, config: ImportConfig): Imp
         if (subtotal > BigInt("99999999999999")) throw new Error("Importe fuera del rango admitido.");
         op.lines.push({ productName, variant, quantity: fixed(quantity, 3), unitPrice: fixed(price), subtotal: fixed(subtotal) }); rowTotal += subtotal;
       });
+      const addSampleLine = (productName: string, variant: string | null, quantityValue: SourceCell["value"], field: string) => check(field, () => {
+        if (!productName || productName.length > 160) throw new Error("Completá el producto de la muestra.");
+        const quantity = scaled(quantityValue, m.decimal, 3);
+        if (quantity <= BigInt(0)) throw new Error("La cantidad debe ser mayor que cero.");
+        op.sampleLines.push({ productName, variant, quantity: fixed(quantity, 3), unitLabel: op.sampleUnit });
+      });
       if (correctedTotal === null) {
-        if (m.mode === "blackfruit") for (const product of m.products) { const qty = valueAt(row, product.column); if (qty !== null && qty !== "" && Number(qty) !== 0) addLine(product.name, product.variant, qty, product.price, product.name + " · " + product.variant); }
-        if (m.mode === "lines") addLine(textAt(row, m.product), null, valueAt(row, m.quantity), valueAt(row, m.unitPrice), "Producto / cantidad / precio");
-        if (m.mode === "amount") rowTotal = check("Importe", () => scaled(valueAt(row, m.total), m.decimal)) ?? BigInt(0);
-        else if (m.total && valueAt(row, m.total) !== null && valueAt(row, m.total) !== "") check("Total", () => { if (scaled(valueAt(row, m.total), m.decimal) !== rowTotal) throw new Error(`No coincide con el cálculo de productos: ${fixed(rowTotal)} ARS.`); });
+        if (m.mode === "blackfruit") for (const product of m.products) { const qty = valueAt(row, product.column); if (qty !== null && qty !== "" && Number(qty) !== 0) { if (op.kind === "sample") addSampleLine(product.name, product.variant, qty, product.name + " · " + product.variant); else addLine(product.name, product.variant, qty, product.price, product.name + " · " + product.variant); } }
+        if (m.mode === "lines") { if (op.kind === "sample") addSampleLine(textAt(row, m.product), null, valueAt(row, m.quantity), "Producto / cantidad"); else addLine(textAt(row, m.product), null, valueAt(row, m.quantity), valueAt(row, m.unitPrice), "Producto / cantidad / precio"); }
+        if (m.mode === "amount" && m.total && valueAt(row, m.total) !== null && valueAt(row, m.total) !== "") rowTotal = check("Importe", () => scaled(valueAt(row, m.total), m.decimal)) ?? BigInt(0);
+        else if (op.kind === "sale" && m.total && valueAt(row, m.total) !== null && valueAt(row, m.total) !== "") check("Total", () => { if (scaled(valueAt(row, m.total), m.decimal) !== rowTotal) throw new Error(`No coincide con el cálculo de productos: ${fixed(rowTotal)} ARS.`); });
       }
       total += rowTotal;
       const reference = textAt(row, m.reference);

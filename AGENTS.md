@@ -8,6 +8,7 @@ BlackFruit es una aplicación privada para gestionar ventas de frutas deshidrata
 2. Implementar una ruta completa y pequeña: pantalla o entrada → caso de uso → persistencia → lectura. Mantener la especificación y el código alineados.
 3. Comprobar las reglas y fallos de mayor riesgo con pruebas de dominio o integración. Verificar `npm run typecheck`, `npm run lint` y `npm run build` antes de dar por terminado un corte funcional.
 4. Revisar el resultado contra los criterios de aceptación y actualizar los documentos cuando cambie una decisión. Usar las skills de ECC que correspondan al trabajo; ECC es una herramienta de ingeniería, no una dependencia de la aplicación.
+5. En cambios de interfaz, usar los skills locales `impeccable` y `ui-ux-pro-max` de `.agents/skills/`, conservar la identidad de BlackFruit y revisar el resultado en escritorio y celular.
 
 ## Límites del código y de los datos
 

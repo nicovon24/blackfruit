@@ -1,6 +1,6 @@
 # Especificación: registrar y gestionar ventas v1
 
-**Estado:** venta por importe, clientes y ciclo de estados probados en PostgreSQL; importación de líneas disponible. Quedan alta/edición manual de líneas, gestión independiente de clientes/catálogo y accesibilidad completa. **Origen:** decisiones del negocio y mapeo de una hoja privada. Sigue el formato de capacidad de ECC (`product-capability`).
+**Estado:** venta por importe, clientes, catálogo y ciclo de estados probados en PostgreSQL; importación de líneas disponible. Quedan alta/edición manual de líneas y revisión completa de accesibilidad. **Origen:** decisiones del negocio y mapeo de una hoja privada. Sigue el formato de capacidad de ECC (`product-capability`).
 
 ## Capacidad y resultado
 
@@ -8,7 +8,7 @@ Una persona administradora autenticada registra una venta en pocos pasos, vuelve
 
 ## Actores y superficies
 
-- **Administrador:** crea, consulta, edita, anula, borra lógicamente, restaura y elimina definitivamente ventas desde la papelera.
+- **Administrador:** crea, consulta, edita, anula, mueve a papelera y restaura ventas. La decisión vigente sobre papelera reversible está en la especificación 010.
 - **Pantallas:** listado, formulario breve, detalle/edición, papelera y dashboard.
 - **Servidor:** acciones de mutación y consultas que comprueban sesión y permiso; servicios de negocio para reglas y repositorios para PostgreSQL.
 
@@ -22,7 +22,7 @@ Una persona administradora autenticada registra una venta en pocos pasos, vuelve
 6. El nombre crudo de una fila importada se conserva en su procedencia. No se vincula automáticamente a un cliente por coincidencia de texto. Las muestras se registran en otra entidad y no aparecen en estos indicadores.
 7. Cada cambio registra actor, acción y fecha en auditoría. Las consultas y mutaciones verifican permisos en el servidor, incluidos endpoints y exportaciones.
 8. Nueva venta y detalle/edición abren en ventanas emergentes. Se puede seleccionar o crear cliente al guardar. Una venta importada con líneas permite actualizar fecha, cliente, canal y notas conservando total y líneas históricos.
-9. Eliminar definitivamente exige que la venta esté en papelera y una confirmación explícita. Borra la venta y sus líneas en una transacción, conserva un evento de auditoría sin datos personales y rechaza versiones desactualizadas. Si la venta fue importada, conserva las filas de origen con `kind = deleted`, desvinculadas y sin clave de procedencia, para permitir una nueva carga revisada.
+9. La papelera es reversible: mover y restaurar conservan líneas y procedencia, y comprueban versión. La aplicación no expone borrado definitivo de ventas; la decisión actual se detalla en la especificación 010.
 
 ## Entradas, salidas y fallos
 

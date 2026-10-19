@@ -14,7 +14,11 @@
 .app-sidebar { position: fixed; inset: 0 auto 0 0; width: 236px; display: flex; flex-direction: column; padding: 26px 18px 22px; background: var(--sidebar); color: var(--sidebar-foreground); }
 .sidebar-brand { display: flex; flex-direction: column; margin: 0 15px 42px; }
 .sidebar-brand > span:last-child { margin-top: 8px; font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: #c1b29c; }
-.nav-caption { margin: 0 15px 12px; color: #c1b29c; font-size: 10px; text-transform: uppercase; letter-spacing: .13em; }
+.app-navigation { display: flex; flex: 1; flex-direction: column; min-height: 0; overflow-y: auto; }
+.nav-home { margin-bottom: 18px; }
+.nav-group { margin-bottom: 16px; }
+.nav-caption { margin: 0 15px 8px; color: #c1b29c; font-size: 10px; text-transform: uppercase; letter-spacing: .13em; }
+.nav-utility { margin-top: auto; padding-top: 14px; border-top: 1px solid #393024; }
 .nav-link { position: relative; display: flex; align-items: center; gap: 13px; min-height: 46px; margin-bottom: 5px; padding: 12px 15px; border-radius: 8px; color: #d8cbb8; font-size: 14px; transition: background .15s; }
 .nav-link:hover { background: #2a231b; color: white; }
 .nav-link[aria-current="page"] { background: #3a2b1c; color: #ffb36d; }
@@ -80,9 +84,9 @@
 .login-form-container { width: 100%; max-width: 360px; }
 .login-lock { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 32px; border: 1px solid var(--border); border-radius: 12px; background: white; color: var(--primary); }
 .login-access h1 { font-size: 38px; font-weight: 600; letter-spacing: -.045em; line-height: 1.2; }
-.login-help { display: flex; align-items: flex-start; gap: 9px; margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 11px; line-height: 1.8; }
+.login-help { display: flex; align-items: flex-start; gap: 9px; margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 12px; line-height: 1.7; }
 .login-help svg { flex-shrink: 0; margin-top: 3px; }
-.login-bottom { position: absolute; bottom: 28px; padding: 0 20px; font-size: 10px; color: var(--muted-foreground); text-align: center; }
+.login-bottom { position: absolute; bottom: 28px; padding: 0 20px; font-size: 12px; color: var(--muted-foreground); text-align: center; }
 .login-mobile-brand { display: none; }
 @media (max-width: 1100px) {
   .app-sidebar { width: 210px; }
@@ -101,8 +105,9 @@
   .sidebar-brand > span:last-child, .sidebar-footer, .nav-caption { display: none; }
   .sidebar-actions { position: absolute; top: 16px; right: 18px; margin: 0; padding: 0; }
   .sidebar-sign-out { width: auto; padding-inline: 12px; }
-  .app-navigation { display: flex; gap: 5px; }
-  .nav-link { flex: 1; min-width: 0; flex-direction: column; justify-content: center; gap: 5px; margin: 0; padding: 9px 4px; border-radius: 8px 8px 0 0; font-size: 11px; }
+  .app-navigation { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; overflow: visible; }
+  .nav-home, .nav-group, .nav-utility { display: contents; }
+  .nav-link { min-width: 0; flex-direction: column; justify-content: center; gap: 5px; margin: 0; padding: 9px 4px; border-radius: 8px; font-size: 11px; }
   .nav-link[aria-current="page"]::before { inset: auto 16px 0; height: 2px; width: auto; }
   .app-body { margin-left: 0; min-height: calc(100dvh - 120px); }
   .app-topbar { min-height: 58px; padding: 7px 20px; }
@@ -129,7 +134,7 @@
   .login-story { display: none; }
   .login-access { min-height: 100dvh; padding: 32px 26px 85px; justify-content: flex-start; }
   .login-mobile-brand { display: block; width: 100%; max-width: 360px; margin-bottom: 46px; }
-  .login-mobile-brand p { margin-top: 5px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted-foreground); }
+  .login-mobile-brand p { margin-top: 5px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted-foreground); }
   .login-access h1 { font-size: 32px; }
   .login-lock { display: none; }
 }

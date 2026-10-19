@@ -12,8 +12,8 @@ La entrada habitual es el botón «Importar Excel» del dashboard, que abre el m
 - Perfil BlackFruit: una fila por operación con seis cantidades y precios aplicados revisables. Fecha B, nombre C, cantidades D:I, total J y notas K; encabezado 16. Precios iniciales leídos de N3:N5 y N7:N9, sin inventar presentación.
 - Perfil por importe: fecha e importe requeridos y campos opcionales mapeables. Perfil por líneas: referencia explícita de agrupación, producto, cantidad y precio; excluir una operación excluye todas sus líneas.
 - Decimales y fechas explícitos en el mapeo. Totales/subtotales fuera del rango elegido se conservan en la copia de procedencia y no generan ventas.
-- Las muestras quedan conservadas como registros de origen clasificados; sin tabla/vista independiente por ahora. Filas inválidas se corrigen en el archivo o se excluyen expresamente.
-- Una muestra revisada puede tener importe cero. Se conserva como procedencia clasificada, suma una muestra al resumen y no crea una venta ni aumenta ingresos. Las ventas siguen requiriendo un importe positivo.
+- La revisión permite elegir Venta o Muestra por operación. Una muestra completa con estado explícito crea `Sample` y sus líneas sin requerir precio. Datos incompletos quedan en `SampleImportReview`, vinculados con las filas de origen para revisión posterior; las filas históricas se pueden incorporar a esa cola sin inventar información.
+- Una muestra revisada puede tener importe cero. Suma una muestra al resumen de importación y no crea una venta ni aumenta ingresos. Las ventas siguen requiriendo un importe positivo.
 - En la revisión se puede excluir una fila u operación agrupada mediante «Borrar fila»; conserva su origen como excluida. También se puede indicar un monto positivo corregido para una venta, incluso si el archivo dice cero. Esa operación se guarda como venta por importe, sin líneas de producto; las líneas y valores originales quedan en la procedencia. La corrección no cambia el archivo ni las demás operaciones.
 - El primer paso del asistente ofrece «Descargar archivo de ejemplo (CSV)» (`public/ejemplo-importacion.csv`): perfil por importe con columnas Fecha, Nombre y Total, datos ficticios y sin errores. Es un archivo público; nunca debe contener datos reales.
 - Nombres de origen no crean identidades automáticamente. El usuario puede vincular un cliente existente o conservar el nombre sin vínculo.
@@ -22,7 +22,7 @@ La entrada habitual es el botón «Importar Excel» del dashboard, que abre el m
 
 `import_batch` guarda una copia estructurada del archivo, configuración, actor y resultado; `import_source_row` conserva hoja, fila, fórmulas, colores, decisiones y vínculo. La fuente lógica es estable entre cargas para detectar filas ya importadas. Archivo cambiado en una fila previamente importada produce conflicto, no una venta nueva.
 
-Cuando se elimina definitivamente una venta importada, sus filas pasan a `kind = deleted`, conservan el origen crudo y pierden `saleId` y `originKey`. La misma procedencia puede volver a cargarse para una revisión nueva. La restricción de la tabla debe admitir ese estado; el cambio se aplica en una migración posterior a la creación de `import_source_row`.
+Decisión vigente (especificación 010): una venta importada movida a papelera conserva sus líneas, `saleId` y `originKey`; la misma procedencia sigue detectándose como duplicada. El estado `kind = deleted` del esquema queda como compatibilidad histórica y no se genera desde la aplicación.
 
 La revisión se valida y firma por hash en servidor. Confirmar verifica permisos y revisión vigente; recalcula líneas y totales, conserva descripción/precio históricos, escribe ventas/procedencia/auditoría en una transacción y concilia cantidades/importes. Un reintento del lote confirmado devuelve su resultado. La unicidad de procedencia evita duplicados entre cargas concurrentes. Las exclusiones y filas duplicadas se muestran antes de confirmar.
 

@@ -5,11 +5,13 @@ import { digest, proposeMapping } from "../domain/parse-import";
 import { ImportValidationError, type ImportConfig, type ImportSummary, type SourceWorkbook } from "../domain/import-types";
 
 import { reviewImport, type ImportReviewLookup } from "../application/review-import";
+import { validateSample } from "@/modules/samples/domain/sample";
+import { resolveCustomer } from "@/modules/customers/infrastructure/prisma-customers";
 
 function lookup(db: Prisma.TransactionClient): ImportReviewLookup {
   return {
     findOrigins: (keys) => db.importSourceRow.findMany({ where: { originKey: { in: keys } }, select: { originKey: true, rowHash: true } }),
-    findCustomerIds: async (ids) => (await db.customer.findMany({ where: { id: { in: ids } }, select: { id: true } })).map((customer) => customer.id),
+    findCustomerIds: async (ids) => (await db.customer.findMany({ where: { id: { in: ids }, deletedAt: null }, select: { id: true } })).map((customer) => customer.id),
   };
 }
 
@@ -54,6 +56,8 @@ export async function confirmImport(id: string, actorId: string, previewHash: st
       const saleIds: string[] = [];
       for (const op of preview.operations) {
         let saleId: string | null = null;
+        let sampleReviewId: string | null = null;
+        let claimSampleOrigins = false;
         if (op.kind === "sale" && !op.duplicate) {
           const sale = await tx.sale.create({ data: {
             occurredOn: new Date(`${op.date}T00:00:00Z`), total: op.total, mode: op.lines.length ? "lines" : "amount",
@@ -63,7 +67,26 @@ export async function confirmImport(id: string, actorId: string, previewHash: st
           saleId = sale.id; saleIds.push(sale.id);
           await tx.auditEvent.create({ data: { actorUserId: actorId, entityType: "sale", entityId: sale.id, action: "imported" } });
         }
-        await tx.importSourceRow.createMany({ data: op.rows.map((row, index) => ({ batchId: id, sheet: (batch.config as unknown as ImportConfig).mapping.sheet, rowNumber: row.number, kind: op.duplicate ? "duplicate" : op.kind, rawName: op.name || null, raw: json(row), originKey: saleId ? op.originKeys[index] : null, rowHash: op.rowHashes[index], saleId })) });
+        if (op.kind === "sample") {
+          const contentHash = digest(op.rowHashes);
+          const existing = await tx.sampleImportReview.findUnique({ where: { originKey: op.originKeys[0] }, select: { id: true, contentHash: true } });
+          if (existing) {
+            sampleReviewId = existing.id;
+            if (existing.contentHash !== contentHash) await tx.sampleImportReview.update({ where: { id: existing.id }, data: { status: "conflict", updatedAt: new Date() } });
+          } else if (!op.duplicate) {
+            const review = await tx.sampleImportReview.create({ data: { originKey: op.originKeys[0], contentHash, recipientName: op.name || null, sampleOn: op.date ? new Date(`${op.date}T00:00:00.000Z`) : null, suggested: json({ lines: op.sampleLines, status: op.sampleStatus, unit: op.sampleUnit }) }, select: { id: true } });
+            sampleReviewId = review.id;
+            claimSampleOrigins = true;
+            if (op.sampleStatus && op.name && op.date && op.sampleLines.length > 0 && op.sampleLines.every((line) => line.unitLabel) && op.errors.length === 0) {
+              const data = validateSample({ recipientName: op.name, sampleOn: op.date, status: op.sampleStatus, deliveredOn: "", notes: op.notes, customerId: op.customerId, lines: op.sampleLines.map((line) => ({ ...line, productId: null })) }, []);
+              const customerId = await resolveCustomer(tx, data.customer, actorId);
+              const sample = await tx.sample.create({ data: { recipientName: data.recipientName, sampleOn: data.sampleOn, status: data.status, deliveredOn: data.deliveredOn, notes: data.notes, customerId, createdById: actorId, lines: { create: data.lines.map((line) => line) } }, select: { id: true } });
+              await tx.sampleImportReview.update({ where: { id: review.id }, data: { status: "converted", sampleId: sample.id } });
+              await tx.auditEvent.create({ data: { actorUserId: actorId, entityType: "sample", entityId: sample.id, action: "imported" } });
+            }
+          }
+        }
+        await tx.importSourceRow.createMany({ data: op.rows.map((row, index) => ({ batchId: id, sheet: (batch.config as unknown as ImportConfig).mapping.sheet, rowNumber: row.number, kind: op.duplicate ? "duplicate" : op.kind, rawName: op.name || null, raw: json(row), originKey: saleId || claimSampleOrigins ? op.originKeys[index] : null, rowHash: op.rowHashes[index], saleId, sampleReviewId })) });
       }
       const totals = await tx.sale.aggregate({ where: { id: { in: saleIds } }, _count: { id: true }, _sum: { total: true } });
       const units = await tx.saleLine.aggregate({ where: { saleId: { in: saleIds } }, _sum: { quantity: true } });

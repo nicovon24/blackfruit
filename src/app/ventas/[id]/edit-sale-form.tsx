@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updateAmountSaleAction, type EditSaleState } from "./actions";
 import { CustomerPicker } from "@/components/shared/customer-picker";
+import { BusinessDateField } from "@/components/shared/business-date-field";
+import { useUnsavedChangesGuard } from "@/components/shared/use-unsaved-changes-guard";
 import type { CustomerOption } from "@/modules/customers/domain/customer-selection";
 
 type Props = {
@@ -29,9 +31,11 @@ export function EditSaleForm(props: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const errorId = useId();
   const [values, setValues] = useState({ occurredOn: props.occurredOn, amount: props.amount, channel: props.channel, notes: props.notes });
+  const [dirty, setDirty] = useState(false);
+  useUnsavedChangesGuard(dirty && !props.onSaved, "Hay cambios en la venta sin guardar. ¿Querés descartarlos?");
   const [state, action, pending] = useActionState(async (previous: EditSaleState, form: FormData) => {
     const result = await updateAmountSaleAction(props.id, previous, form);
-    if (result.saved) { props.onSaved?.(); router.refresh(); }
+    if (result.saved) { setDirty(false); props.onSaved?.(); router.refresh(); }
     return result;
   }, initialState);
 
@@ -43,10 +47,10 @@ export function EditSaleForm(props: Props) {
   }, [state, pending]);
 
   return (
-    <form ref={formRef} action={action} aria-busy={pending} className="grid gap-5 sm:grid-cols-2">
+    <form ref={formRef} action={action} aria-busy={pending} className="grid gap-5 sm:grid-cols-2" onChangeCapture={() => setDirty(true)}>
       <input type="hidden" name="version" value={props.version} />
       <div className="sm:col-span-2"><CustomerPicker key={`${props.id}-${props.version}`} customers={props.customers} defaultValue={props.customerId ?? ""} error={state} /></div>
-      <div className="space-y-2"><Label htmlFor="edit-date">Fecha</Label><Input id="edit-date" name="occurredOn" type="date" value={values.occurredOn} onChange={(event) => setValues({ ...values, occurredOn: event.target.value })} required aria-invalid={state.field === "occurredOn"} aria-describedby={state.field === "occurredOn" ? `${errorId}-occurredOn` : undefined} />{state.field === "occurredOn" && <p id={`${errorId}-occurredOn`} role="alert" className="text-sm text-destructive">{state.message}</p>}</div>
+      <div className="space-y-2"><Label htmlFor="edit-date">Fecha</Label><BusinessDateField id="edit-date" name="occurredOn" value={values.occurredOn} onChange={(occurredOn) => setValues((current) => ({ ...current, occurredOn }))} required invalid={state.field === "occurredOn"} />{state.field === "occurredOn" && <p id={`${errorId}-occurredOn`} role="alert" className="text-sm text-destructive">{state.message}</p>}</div>
       <div className="space-y-2"><Label htmlFor="edit-amount">Importe (ARS)</Label><Input id="edit-amount" name="amount" readOnly={props.mode === "lines"} type="number" min="0.01" step="0.01" value={values.amount} onChange={(event) => setValues({ ...values, amount: event.target.value })} required aria-invalid={state.field === "amount"} aria-describedby={state.field === "amount" ? `${errorId}-amount` : undefined} />{state.field === "amount" && <p id={`${errorId}-amount`} role="alert" className="text-sm text-destructive">{state.message}</p>}</div>
       <div className="space-y-2 sm:col-span-2"><Label htmlFor="edit-channel">Canal (opcional)</Label><Input id="edit-channel" name="channel" maxLength={80} value={values.channel} onChange={(event) => setValues({ ...values, channel: event.target.value })} aria-invalid={state.field === "channel"} aria-describedby={state.field === "channel" ? `${errorId}-channel` : undefined} />{state.field === "channel" && <p id={`${errorId}-channel`} role="alert" className="text-sm text-destructive">{state.message}</p>}</div>
       <div className="space-y-2 sm:col-span-2"><Label htmlFor="edit-notes">Notas (opcional)</Label><textarea id="edit-notes" name="notes" maxLength={2000} rows={3} value={values.notes} onChange={(event) => setValues({ ...values, notes: event.target.value })} className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" aria-invalid={state.field === "notes"} aria-describedby={state.field === "notes" ? `${errorId}-notes` : undefined} />{state.field === "notes" && <p id={`${errorId}-notes`} role="alert" className="text-sm text-destructive">{state.message}</p>}</div>

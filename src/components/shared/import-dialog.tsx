@@ -39,7 +39,7 @@ export function ImportDialog() {
       <Dialog.Overlay className="fixed inset-0 z-30 bg-[#1b1610]/45 backdrop-blur-[3px]" />
       <Dialog.Content className="fixed top-1/2 left-1/2 z-40 max-h-[92dvh] w-[calc(100%-24px)] max-w-5xl -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border bg-background shadow-xl" aria-describedby="import-dialog-description">
         <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b bg-background px-5 py-4 sm:px-7 sm:py-5">
-          <div><Dialog.Title className="text-xl font-semibold tracking-tight">Importar ventas</Dialog.Title><Dialog.Description id="import-dialog-description" className="mt-1 text-sm text-muted-foreground">Cargá la planilla y revisá cada operación antes de guardarla.</Dialog.Description></div>
+          <div><Dialog.Title className="text-xl font-semibold tracking-tight">Importar ventas y muestras</Dialog.Title><Dialog.Description id="import-dialog-description" className="mt-1 text-sm text-muted-foreground">Cargá la planilla y revisá cada operación antes de guardarla.</Dialog.Description></div>
           <Dialog.Close asChild><Button type="button" variant="ghost" className="size-11 shrink-0 p-0" aria-label="Cerrar importación"><X size={20} aria-hidden="true" /></Button></Dialog.Close>
         </header>
         <div className="space-y-5 p-3 sm:p-6">

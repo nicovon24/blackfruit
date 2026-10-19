@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createAmountSaleAction, type SaleFormState } from "./actions";
 import { CustomerPicker } from "@/components/shared/customer-picker";
+import { BusinessDateField } from "@/components/shared/business-date-field";
+import { useUnsavedChangesGuard } from "@/components/shared/use-unsaved-changes-guard";
 import type { CustomerOption } from "@/modules/customers/domain/customer-selection";
 
 const initialState: SaleFormState = {};
@@ -18,9 +20,11 @@ export function SaleForm({ today, requestKey, customers, onSaved, onCancel }: { 
   const formRef = useRef<HTMLFormElement>(null);
   const errorId = useId();
   const [values, setValues] = useState({ occurredOn: today, amount: "", channel: "", notes: "" });
+  const [dirty, setDirty] = useState(false);
+  useUnsavedChangesGuard(dirty && !onCancel, "Hay cambios en la venta sin guardar. ¿Querés descartarlos?");
   const [state, action, pending] = useActionState(async (previous: SaleFormState, form: FormData) => {
     const result = await createAmountSaleAction(previous, form);
-    if (result.saleId) { if (onSaved) onSaved(result.saleId); else router.push(`/ventas/${result.saleId}`); router.refresh(); }
+    if (result.saleId) { setDirty(false); if (onSaved) onSaved(result.saleId); else router.push(`/ventas/${result.saleId}`); router.refresh(); }
     return result;
   }, initialState);
 
@@ -32,11 +36,11 @@ export function SaleForm({ today, requestKey, customers, onSaved, onCancel }: { 
   }, [state, pending]);
 
   return (
-    <form ref={formRef} action={action} aria-busy={pending} className="space-y-5">
+    <form ref={formRef} action={action} aria-busy={pending} className="space-y-5" onChangeCapture={() => setDirty(true)}>
       <input type="hidden" name="requestKey" value={requestKey} />
       <div className="space-y-2">
         <Label htmlFor="occurredOn">Fecha de la venta</Label>
-        <Input id="occurredOn" name="occurredOn" type="date" value={values.occurredOn} onChange={(event) => setValues({ ...values, occurredOn: event.target.value })} required aria-invalid={state.field === "occurredOn"} aria-describedby={state.field === "occurredOn" ? `${errorId}-occurredOn` : undefined} />
+        <BusinessDateField id="occurredOn" name="occurredOn" value={values.occurredOn} onChange={(occurredOn) => setValues((current) => ({ ...current, occurredOn }))} required invalid={state.field === "occurredOn"} />
         {state.field === "occurredOn" && <p id={`${errorId}-occurredOn`} role="alert" className="text-sm text-destructive">{state.message}</p>}
       </div>
       <div className="space-y-2">

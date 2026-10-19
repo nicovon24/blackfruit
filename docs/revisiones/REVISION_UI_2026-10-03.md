@@ -42,7 +42,7 @@ El detector CLI inicial sobre `src` devolvió cero hallazgos. El detector DOM de
 
 UI UX Pro Max aportó coincidencias pertinentes para errores inline, asociación con campos y foco. Su búsqueda de progressive disclosure devolvió tipografía, por lo que se descartó; la recomendación de simplificar importación proviene de la revisión del producto.
 
-Refinamientos y criterios de aceptación registrados en `docs/specs/interfaz-v1.md`. Capturas y scripts de QA viven en `tmp/`, fuera de Git. No se agregan dependencias ni migraciones.
+Refinamientos y criterios de aceptación registrados en `docs/specs/frontend/001-interfaz-v1.md`. Capturas y scripts de QA viven en `tmp/`, fuera de Git. No se agregan dependencias ni migraciones.
 
 ## Verificación del refinamiento
 

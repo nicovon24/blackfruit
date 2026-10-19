@@ -60,3 +60,12 @@ test("a zero amount is valid for a reviewed sample but still invalid for a sale"
   const sale = parseImport(workbook, { mapping, decisions: [{ key: "row:2", kind: "sale", customerId: "" }] })[0];
   assert.match(sale.errors[0]?.message ?? "", /importe positivo/);
 });
+
+test("a sample line can be reviewed without a sale price", async () => {
+  const workbook = await readWorkbook(Buffer.from("Fecha,Nombre,Producto,Cantidad,Ref\n2026-10-11,Ana,Naranja,0.250,M-1\n"), "muestras.csv");
+  const mapping = { ...proposeMapping(workbook), mode: "lines" as const, reference: 5, product: 3, quantity: 4, unitPrice: 0, total: 0 };
+  const [sample] = parseImport(workbook, { mapping, decisions: [{ key: "ref:M-1", kind: "sample", customerId: "", sampleStatus: "delivered", sampleUnit: "kg" }] });
+  assert.deepEqual(sample.errors, []);
+  assert.deepEqual(sample.sampleLines, [{ productName: "Naranja", variant: null, quantity: "0.250", unitLabel: "kg" }]);
+  assert.equal(sample.lines.length, 0);
+});

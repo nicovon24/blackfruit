@@ -1,0 +1,13 @@
+# Ensayo de clientes desde ventas importadas
+
+Actor: administrador del proyecto. Resultado: en `dev/blackfruit`, los nombres registrados en el origen de ventas pueden aparecer en el módulo Clientes y sus ventas quedan vinculadas.
+
+Alcance de este ensayo: solo la rama `dev/blackfruit`, con el host Neon esperado y fuera de `NODE_ENV=production`. Se leen nombres no vacíos de `import_source_row.rawName` asociados a una venta sin `customerId`; no se infieren nombres desde muestras ni desde otros campos. Los nombres que solo difieren en mayúsculas o espacios repetidos se agrupan; se conserva una forma original como nombre visible. Cada grupo crea un cliente sin teléfono, correo ni notas personales inferidas y vincula sus ventas. El nombre crudo de procedencia no se modifica.
+
+Estado: la vista previa de solo lectura del 18/10/2026 encontró 26 grupos, 32 ventas sin vínculo, 0 ventas de esos grupos en papelera y 0 clientes existentes con nombre normalizado coincidente. La política de agrupar apariciones idénticas fue autorizada por el usuario para este ensayo en desarrollo. El ensayo se ejecutó: creó 26 clientes y vinculó 32 ventas; una verificación posterior confirmó que las 26 siguen presentes, las 32 ventas siguen asignadas a un nombre coincidente y las 32 filas de origen continúan intactas. Producción queda fuera del script y requiere un reporte y revisión propios.
+
+Ejecución: `npm run dev:preview-sale-customers` muestra el reporte y verifica el resultado de la ejecución anterior; `npm run dev:backfill-sale-customers` muestra solo los candidatos actuales. `npm run dev:backfill-sale-customers -- --execute` aplica todo en una transacción serializable, bloquea las ventas revisadas, comprueba que el conjunto siga siendo de 26 grupos/32 ventas, rechaza coincidencias nuevas y registra auditoría por cliente y venta. La segunda ejecución con todas las ventas ya vinculadas no crea duplicados. Un fallo revierte toda la transacción.
+
+Impacto y reversión: no cambian importes, fechas, estado, líneas ni procedencia. El indicador de clientes identificados puede aumentar. El ensayo puede revertirse antes de ediciones posteriores usando los eventos con acción `sales-customer-backfill-dev-v1:linked` y `sales-customer-backfill-dev-v1:created`; revisar que los clientes no tengan asociaciones nuevas y que las ventas no se hayan editado antes de limpiar los vínculos. No aplicar este script en `production`.
+
+Aceptación: vista previa expone candidatos y totales; ejecución crea 26 clientes y vincula 32 ventas en dev; la lectura de clientes confirma los registros; ventas conserva las filas importadas originales; importes y totales generales no varían; no hay cambios en production.

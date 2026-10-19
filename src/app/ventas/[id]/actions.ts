@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { requirePermission } from "@/modules/auth/infrastructure/require-permission";
 import {
   moveSaleToTrash,
-  permanentlyDeleteSale,
   restoreSale,
   SaleConflictError,
   updateAmountSale,
@@ -24,6 +23,7 @@ function refreshSales() {
   revalidatePath("/dashboard");
   revalidatePath("/ventas");
   revalidatePath("/ventas/papelera");
+  revalidatePath("/papelera");
 }
 
 export async function updateAmountSaleAction(
@@ -91,16 +91,4 @@ export async function restoreSaleAction(id: string, formData: FormData) {
   refreshSales();
   if (formData.get("presentation") === "dialog") return;
   redirect(`/ventas/${id}`);
-}
-
-export async function permanentlyDeleteSaleAction(id: string, formData: FormData) {
-  const actor = await requirePermission("sales:write");
-  try {
-    await permanentlyDeleteSale(id, Number(formData.get("version")), actor.id, prismaSaleMutator);
-  } catch (error) {
-    if (error instanceof SaleConflictError) redirect("/ventas/papelera?error=conflict");
-    throw error;
-  }
-  refreshSales();
-  redirect("/ventas/papelera");
 }

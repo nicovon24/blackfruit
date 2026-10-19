@@ -47,7 +47,7 @@ Actor: equipo autorizado que registra y consulta ventas, especialmente desde cel
 
 Criterios observables: rechazar descarte conserva importe; aceptar cierra; cancelar sin cambios no pregunta; el campo inválido tiene foco y descripción; buscar un importe tal como aparece en pantalla encuentra la operación; limpiar restaura resultados; a 375 px no hay desbordamiento y recientes precede al gráfico. La persistencia y los totales continúan en los servicios existentes.
 
-Pendientes del estudio: simplificar importación por pasos y filtros de revisión, búsqueda paginada de todo el historial y revisión visual completa del login. Ver `docs/REVISION_UI_2026-10-03.md`.
+Pendientes del estudio: simplificar importación por pasos y filtros de revisión, búsqueda paginada de todo el historial y revisión visual completa del login. Ver `docs/revisiones/REVISION_UI_2026-10-03.md`.
 
 `tests/browser-journey.ts` recorre Chrome con una cuenta y una venta temporales en `dev/blackfruit`, limpia los datos al terminar y guarda capturas en `tmp/qa-*.png`. Verifica errores de JavaScript y consola, salvo la respuesta 401 esperada del caso de contraseña incorrecta. Las capturas conservan el cursor para no modificar atributos del DOM durante la hidratación. `tests/auth-integration.ts` verifica indicadores, gráfico, filtro de período, permisos y auditoría.
 

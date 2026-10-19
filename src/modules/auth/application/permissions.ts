@@ -8,6 +8,10 @@ export const permissions = [
   "customers:write",
   "catalog:read",
   "catalog:write",
+  "production:read",
+  "production:write",
+  "samples:read",
+  "samples:write",
 ] as const;
 
 export type Permission = (typeof permissions)[number];

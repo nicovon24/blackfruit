@@ -4,6 +4,7 @@ import { requirePagePermission } from "@/modules/auth/infrastructure/require-pag
 import { SaleForm } from "./sale-form";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeading } from "@/components/shared/page-heading";
+import { SampleDialog } from "@/components/shared/sample-dialog";
 import { listCustomerOptions } from "@/modules/customers/infrastructure/prisma-customers";
 
 export default async function NewSalePage() {
@@ -22,6 +23,7 @@ export default async function NewSalePage() {
     <AppShell user={user} section="Ventas / Nueva venta"><div className="mx-auto max-w-2xl">
       <Link href="/ventas" className="text-sm text-primary hover:underline">← Volver a ventas</Link>
       <div className="mt-6"><PageHeading title="Nueva venta" description="Un registro simple para seguir tus ventas." /></div>
+      <nav aria-label="Tipo de operación" className="mb-5 flex gap-2 text-sm"><span className="rounded-lg border bg-accent px-4 py-2 font-medium">Venta</span><SampleDialog>Muestra</SampleDialog></nav>
       <section className="panel">
         <div className="border-b bg-muted/40 px-6 py-4 text-sm font-medium">Venta por importe <span className="ml-2 font-normal text-muted-foreground">· ARS</span></div>
         <div className="p-6 sm:p-8">

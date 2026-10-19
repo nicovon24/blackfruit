@@ -9,12 +9,13 @@ export type ImportMapping = {
   product: number; quantity: number; unitPrice: number;
   products: { column: number; name: string; variant: string; price: string }[];
 };
-export type RowDecision = { key: string; kind: "sale" | "sample" | "excluded"; customerId: string; amount?: string };
+export type RowDecision = { key: string; kind: "sale" | "sample" | "excluded"; customerId: string; amount?: string; sampleStatus?: "" | "pending" | "delivered"; sampleUnit?: string };
 export type ImportConfig = { mapping: ImportMapping; decisions: RowDecision[] };
 export type ImportLine = { productName: string; variant: string | null; quantity: string; unitPrice: string; subtotal: string };
+export type ImportSampleLine = { productName: string; variant: string | null; quantity: string; unitLabel: string };
 export type ImportOperation = {
   key: string; rows: SourceRow[]; date: string; name: string; notes: string; channel: string;
-  total: string; lines: ImportLine[]; kind: "sale" | "sample" | "excluded"; amountOverride: string;
+  total: string; lines: ImportLine[]; sampleLines: ImportSampleLine[]; sampleStatus: "" | "pending" | "delivered"; sampleUnit: string; kind: "sale" | "sample" | "excluded"; amountOverride: string;
   customerId: string; marker: string; duplicate: boolean; originKeys: string[]; rowHashes: string[];
   errors: { row: number; field: string; message: string }[];
 };

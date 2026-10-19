@@ -27,7 +27,9 @@ async function main() {
     process.stdout.write("Muestra de importe cero conservada sin crear ventas.\n");
   } finally {
     if (actorId) {
+      const reviews = await prisma.sampleImportReview.findMany({ where: { rows: { some: { batch: { actorId } } } }, select: { id: true } });
       await prisma.importSourceRow.deleteMany({ where: { batch: { actorId } } });
+      await prisma.sampleImportReview.deleteMany({ where: { id: { in: reviews.map((review) => review.id) } } });
       await prisma.importBatch.deleteMany({ where: { actorId } });
       await prisma.auditEvent.deleteMany({ where: { actorUserId: actorId } });
       await prisma.user.delete({ where: { id: actorId } });
