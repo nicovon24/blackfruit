@@ -9,6 +9,10 @@ export class CustomerValidationError extends Error {
   constructor(public readonly field: keyof CustomerSelectionInput, message: string) { super(message); }
 }
 
+export class CustomerConflictError extends Error {
+  constructor() { super("El cliente cambió o ya no está disponible. Recargá la agenda y volvé a editarlo."); }
+}
+
 export function validateCustomerSelection(input: CustomerSelectionInput): CustomerSelection {
   const id = input.customerId?.trim() ?? "";
   if (!id) return { kind: "none" };

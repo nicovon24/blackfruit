@@ -1,6 +1,6 @@
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { CustomerValidationError, validateCustomerSelection, type CustomerSelection } from "../domain/customer-selection";
+import { CustomerConflictError, CustomerValidationError, validateCustomerSelection, type CustomerSelection } from "../domain/customer-selection";
 
 export async function listCustomerOptions(term = "", selectedId?: string) {
   const text = term.trim().slice(0, 100);
@@ -42,6 +42,17 @@ export async function createCustomer(input: { name: string; email: string; phone
     }
     throw error;
   }
+}
+
+export async function updateCustomer(id: string, version: number, input: { name: string; email: string; phone: string }, actorId: string) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) || !Number.isSafeInteger(version) || version < 1) throw new CustomerConflictError();
+  const selection = validateCustomerSelection({ customerId: "new", customerName: input.name, customerEmail: input.email, customerPhone: input.phone });
+  if (selection.kind !== "new") throw new Error("Selección inesperada.");
+  await prisma.$transaction(async (tx) => {
+    const updated = await tx.customer.updateMany({ where: { id, version, deletedAt: null }, data: { ...selection.data, version: { increment: 1 } } });
+    if (updated.count !== 1) throw new CustomerConflictError();
+    await tx.auditEvent.create({ data: { actorUserId: actorId, entityType: "customer", entityId: id, action: "updated" } });
+  });
 }
 
 // Called inside the sale transaction: failures roll back the customer and audit too.
