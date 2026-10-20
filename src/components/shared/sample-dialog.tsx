@@ -1,9 +1,11 @@
 "use client";
 
+import { DialogFrame } from "@/components/shared/dialog-frame";
+
 import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
-import { FlaskConical, X } from "lucide-react";
+import { FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { loadSampleEditor } from "@/app/muestras/editor-actions";
 import { SampleForm } from "@/app/muestras/sample-form";
@@ -26,10 +28,8 @@ export function SampleDialog({ children, customerId }: { children?: ReactNode; c
   return <>
     <Dialog.Root open={open} onOpenChange={changeOpen}>
       <Dialog.Trigger asChild>{children ? <button type="button" className="inline-flex min-h-11 items-center text-primary hover:underline">{children}</button> : <Button type="button"><FlaskConical size={16} aria-hidden="true" />Registrar muestra</Button>}</Dialog.Trigger>
-      <Dialog.Portal><Dialog.Overlay className="fixed inset-0 z-50 bg-[#1b1610]/45" /><Dialog.Content data-sample-dialog className="fixed inset-x-3 top-1/2 z-60 mx-auto max-h-[94dvh] max-w-3xl -translate-y-1/2 overflow-y-auto rounded-xl border bg-background shadow-xl">
-        <header className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b bg-background px-5 py-4"><div><Dialog.Title className="text-xl font-semibold">Registrar muestra</Dialog.Title><Dialog.Description className="mt-1 text-sm text-muted-foreground">Destinatario, fecha, productos y estado de entrega.</Dialog.Description></div><Dialog.Close asChild><Button type="button" variant="ghost" className="size-11 p-0" aria-label="Cerrar ventana"><X size={19} /></Button></Dialog.Close></header>
-        <div className="p-4 sm:p-6">{error ? <p role="alert" className="text-sm text-destructive">{error} <button type="button" onClick={() => void load()} className="underline">Reintentar</button></p> : data ? <SampleForm {...data} onSaved={() => { setOpen(false); setData(null); setDirty(false); setNotice("Muestra guardada."); router.refresh(); }} onCancel={() => changeOpen(false)} onDirtyChange={setDirty} /> : <p role="status" className="py-12 text-center text-sm text-muted-foreground">Cargando formulario…</p>}</div>
-      </Dialog.Content></Dialog.Portal>
+      <DialogFrame title="Registrar muestra" description="Destinatario, fecha, productos y estado de entrega." size="sample" layer="nested" data-sample-dialog><div>{error ? <p role="alert" className="text-sm text-destructive">{error} <button type="button" onClick={() => void load()} className="underline">Reintentar</button></p> : data ? <SampleForm {...data} onSaved={() => { setOpen(false); setData(null); setDirty(false); setNotice("Muestra guardada."); router.refresh(); }} onCancel={() => changeOpen(false)} onDirtyChange={setDirty} /> : <p role="status" className="py-12 text-center text-sm text-muted-foreground">Cargando formulario…</p>}</div>
+      </DialogFrame>
     </Dialog.Root>
     {notice && <div role="status" className="fixed right-4 bottom-4 z-50 rounded-lg border bg-background p-4 text-sm shadow-lg">{notice} <button type="button" onClick={() => setNotice("")} className="ml-3 underline">Cerrar</button></div>}
   </>;

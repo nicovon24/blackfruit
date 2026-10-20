@@ -1,5 +1,7 @@
 "use client";
 
+import { NativeSelect } from "@/components/ui/native-select";
+
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { BusinessDateField } from "@/components/shared/business-date-field";
@@ -30,10 +32,11 @@ export function PeriodPicker({ period, currentMonth }: { period: SalesPeriod; cu
     else setError("");
   }
   const years = Array.from({ length: Math.max(8, Number(currentMonth.slice(0, 4)) - 2020 + 2) }, (_, index) => Number(currentMonth.slice(0, 4)) + 1 - index);
-  return <div className="flex flex-wrap items-end gap-3" aria-busy={pending}>
-    <label className="space-y-1 text-sm">Período<select value={mode} onChange={(event) => changeMode(event.target.value as SalesPeriod["kind"])} className="field-select block min-h-11"><option value="month">Un mes</option><option value="range">Rango de fechas</option><option value="all">Todo el histórico</option></select></label>
-    {mode === "month" && <><label className="space-y-1 text-sm">Mes<select value={month.slice(5)} onChange={(event) => { const next = `${month.slice(0, 4)}-${event.target.value}`; setMonth(next); navigate(`/dashboard?period=${next}`); }} className="field-select block min-h-11">{months.map((label, index) => <option key={label} value={String(index + 1).padStart(2, "0")}>{label}</option>)}</select></label><label className="space-y-1 text-sm">Año<select value={month.slice(0, 4)} onChange={(event) => { const next = `${event.target.value}-${month.slice(5)}`; setMonth(next); navigate(`/dashboard?period=${next}`); }} className="field-select block min-h-11">{years.map((year) => <option key={year}>{year}</option>)}</select></label></>}
+  return <div className="period-toolbar" aria-busy={pending}>
+    <fieldset><legend className="field-label mb-2">Período</legend><div className="segmented-control">{([{ value: "month", label: "Mes" }, { value: "range", label: "Rango" }, { value: "all", label: "Histórico" }] as const).map((item) => <label key={item.value}><input type="radio" name="period-mode" value={item.value} checked={mode === item.value} onChange={() => changeMode(item.value)} /><span>{item.label}</span></label>)}</div></fieldset>
+    {mode === "month" && <><label className="space-y-1 text-sm">Mes<NativeSelect value={month.slice(5)} onChange={(event) => { const next = `${month.slice(0, 4)}-${event.target.value}`; setMonth(next); navigate(`/dashboard?period=${next}`); }} className="field-select block min-h-11">{months.map((label, index) => <option key={label} value={String(index + 1).padStart(2, "0")}>{label}</option>)}</NativeSelect></label><label className="space-y-1 text-sm">Año<NativeSelect value={month.slice(0, 4)} onChange={(event) => { const next = `${event.target.value}-${month.slice(5)}`; setMonth(next); navigate(`/dashboard?period=${next}`); }} className="field-select block min-h-11">{years.map((year) => <option key={year}>{year}</option>)}</NativeSelect></label></>}
     {mode === "range" && <><div className="space-y-1"><Label htmlFor="period-from">Desde</Label><BusinessDateField id="period-from" value={from} onChange={(value) => changeRange(value, to)} /></div><div className="space-y-1"><Label htmlFor="period-to">Hasta</Label><BusinessDateField id="period-to" value={to} onChange={(value) => changeRange(from, value)} /></div></>}
-    {pending && <span role="status" className="text-xs text-muted-foreground">Actualizando…</span>}{error && <p role="alert" className="w-full text-sm text-destructive">{error}</p>}
+    {mode === "range" && (!from || !to) && <p role="status" className="w-full text-sm text-muted-foreground">Completá ambas fechas para actualizar. Los datos todavía corresponden al último período consultado.</p>}
+    {pending && <span role="status" className="text-sm text-muted-foreground">Actualizando…</span>}{error && <p role="alert" className="w-full text-sm text-destructive">{error}</p>}
   </div>;
 }

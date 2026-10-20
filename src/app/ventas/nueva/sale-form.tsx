@@ -1,5 +1,7 @@
 "use client";
 
+import { Textarea } from "@/components/ui/textarea";
+
 import { useActionState, useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -56,12 +58,12 @@ export function SaleForm({ today, requestKey, customers, onSaved, onCancel }: { 
       </div>
       <div className="space-y-2">
         <Label htmlFor="notes">Notas <span className="font-normal text-muted-foreground">(opcional)</span></Label>
-        <textarea id="notes" name="notes" value={values.notes} onChange={(event) => setValues({ ...values, notes: event.target.value })} maxLength={2000} rows={3} className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" aria-invalid={state.field === "notes"} aria-describedby={state.field === "notes" ? `${errorId}-notes` : undefined} />
+        <Textarea id="notes" name="notes" value={values.notes} onChange={(event) => setValues({ ...values, notes: event.target.value })} maxLength={2000} rows={3} className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" aria-invalid={state.field === "notes"} aria-describedby={state.field === "notes" ? `${errorId}-notes` : undefined} />
         {state.field === "notes" && <p id={`${errorId}-notes`} role="alert" className="text-sm text-destructive">{state.message}</p>}
       </div>
       <p className="text-sm text-muted-foreground">Podés registrar una venta sin cliente y vincularla más adelante.</p>
       {state.message && !state.field && <p role="alert" className="text-sm text-destructive">{state.message}</p>}
-      <div className="flex flex-wrap justify-end gap-3 border-t pt-5">{onCancel ? <Button type="button" variant="outline" onClick={onCancel} disabled={pending}>Cancelar</Button> : <Button asChild variant="outline"><Link href="/ventas">Cancelar</Link></Button>}<Button disabled={pending} type="submit"><Check size={16} aria-hidden="true" />{pending ? "Guardando…" : "Guardar venta"}</Button></div>
+      <div className="form-actions">{onCancel ? <Button type="button" variant="outline" onClick={onCancel} disabled={pending}>Cancelar</Button> : <Button asChild variant="outline"><Link href="/ventas">Cancelar</Link></Button>}<Button disabled={pending} type="submit"><Check size={16} aria-hidden="true" />{pending ? "Guardando…" : "Guardar venta"}</Button></div>
     </form>
   );
 }

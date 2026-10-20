@@ -27,7 +27,7 @@ export default async function NewSalePage() {
       <section className="panel">
         <div className="border-b bg-muted/40 px-6 py-4 text-sm font-medium">Venta por importe <span className="ml-2 font-normal text-muted-foreground">· ARS</span></div>
         <div className="p-6 sm:p-8">
-        <SaleForm today={today} requestKey={randomUUID()} customers={customers} />
+        <div className="form-page"><SaleForm today={today} requestKey={randomUUID()} customers={customers} /></div>
         </div>
       </section>
     </div></AppShell>

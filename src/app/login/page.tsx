@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowUpRight, Leaf, LockKeyhole } from "lucide-react";
 import { Brand } from "@/components/shared/brand";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export default function LoginPage() {
       <div className="login-story-footer"><span>Frutas deshidratadas.<br />Ideas en movimiento.</span><ArrowUpRight size={26} strokeWidth={1.2} aria-hidden="true" /></div>
     </section>
     <section className="login-access" aria-labelledby="login-title">
+      <div className="login-theme"><ThemeToggle /></div>
       <div className="login-mobile-brand"><Brand /><p>Gestión del negocio</p></div>
       <div className="login-form-container"><div className="login-lock"><LockKeyhole size={22} strokeWidth={1.5} aria-hidden="true" /></div><p className="eyebrow mb-3">Tu espacio de trabajo</p><h1 id="login-title">Qué bueno verte<br />por acá.</h1><p className="mt-4 text-sm leading-6 text-muted-foreground">Ingresá para seguir con el día a día de BlackFruit.</p><LoginForm /><div className="login-help"><LockKeyhole size={14} aria-hidden="true" /><p>Acceso privado para el equipo.<br />Si necesitás ayuda para entrar, contactá al administrador.</p></div></div>
       <p className="login-bottom">Hecho para acompañar el crecimiento de BlackFruit.</p>

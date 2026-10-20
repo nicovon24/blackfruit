@@ -32,10 +32,10 @@ async function main() {
     await page.waitForURL("**/dashboard");
     await page.locator("label").filter({ hasText: /^Mes/ }).locator("select").selectOption("09");
     await page.waitForURL(/period=2026-09/);
-    await page.getByLabel("Período").selectOption("range");
+    await page.getByRole("radio", { name: "Rango", exact: true }).check();
     await page.getByLabel("Hasta").fill("12/10/2026");
     await page.waitForURL(/view=range.*to=2026-10-12/);
-    await page.getByLabel("Período").selectOption("all");
+    await page.getByRole("radio", { name: "Histórico", exact: true }).check();
     await page.waitForURL(/view=all/);
 
     await page.goto(`${base}/clientes`);
@@ -48,7 +48,7 @@ async function main() {
     await customerDialog.waitFor({ state: "hidden" });
     customerId = (await prisma.customer.findFirstOrThrow({ where: { name }, select: { id: true } })).id;
     await page.getByLabel("Buscar cliente").fill(marker);
-    await page.getByRole("button", { name: "Buscar" }).click();
+    await page.getByRole("button", { name: "Buscar", exact: true }).click();
     await page.getByRole("cell", { name }).waitFor();
 
     await page.goto(`${base}/dashboard`);

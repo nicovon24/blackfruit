@@ -51,7 +51,7 @@ export function LoginForm() {
           placeholder="tu@email.com"
           autoComplete="email"
           required
-          className="h-11 bg-white px-3"
+          className="h-11 bg-surface px-3"
           aria-invalid={Boolean(error)}
         />
       </div>
@@ -64,7 +64,7 @@ export function LoginForm() {
           type={showPassword ? "text" : "password"}
           autoComplete="current-password"
           required
-          className="h-11 bg-white pr-12 pl-3"
+          className="h-11 bg-surface pr-12 pl-3"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? "login-error" : undefined}
         />

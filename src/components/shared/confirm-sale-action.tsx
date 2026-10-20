@@ -19,8 +19,8 @@ export function ConfirmSaleAction({ label, description, action, version, onCompl
   return <AlertDialog.Root open={open} onOpenChange={changeOpen}>
     <AlertDialog.Trigger asChild><Button type="button" variant="outline">{label}</Button></AlertDialog.Trigger>
     <AlertDialog.Portal>
-      <AlertDialog.Overlay className="fixed inset-0 z-40 bg-[#1b1610]/45 backdrop-blur-[3px]" />
-      <AlertDialog.Content onEscapeKeyDown={(event) => { event.preventDefault(); event.stopPropagation(); changeOpen(false); }} className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-white p-6 shadow-xl">
+      <AlertDialog.Overlay className="dialog-backdrop z-40 backdrop-blur-[3px]" />
+      <AlertDialog.Content onEscapeKeyDown={(event) => { event.preventDefault(); event.stopPropagation(); changeOpen(false); }} className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-surface p-6 shadow-xl">
         <AlertDialog.Title className="text-xl font-semibold tracking-tight">{label}</AlertDialog.Title>
         <AlertDialog.Description className="mt-3 text-sm leading-6 text-muted-foreground">{description}</AlertDialog.Description>
         <div className="mt-6 flex justify-end gap-3">

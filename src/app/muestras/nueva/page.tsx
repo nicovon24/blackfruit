@@ -17,6 +17,6 @@ export default async function NewSamplePage({ searchParams }: { searchParams: Pr
   return <AppShell user={user} section="Muestras / Nueva">
     <Link href="/muestras" className="text-sm text-primary hover:underline">← Volver a muestras</Link>
     <div className="mt-6"><PageHeading title="Registrar muestra" description="Elegí destinatario, productos, cantidad, unidad y estado." /></div>
-    <SampleForm products={products} customers={customers} today={today} requestKey={randomUUID()} preselectedCustomerId={customerId} />
+    <div className="form-page"><SampleForm products={products} customers={customers} today={today} requestKey={randomUUID()} preselectedCustomerId={customerId} /></div>
   </AppShell>;
 }
