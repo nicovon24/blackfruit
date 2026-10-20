@@ -1,6 +1,6 @@
 # Muestras v1
 
-**Estado: implementado en `feature/produccion-muestras-3d`; migraciones verificadas en `dev/blackfruit`.** El significado operativo de la fecha y las unidades habituales siguen pendientes de definición con el usuario.
+**Estado: desplegado en Vercel Production el 20/10/2026; migraciones verificadas en `dev/blackfruit`, en una rama aislada y en Neon `production`.** El significado operativo de la fecha y las unidades habituales siguen pendientes de definición con el usuario; falta QA autenticado publicado.
 
 ## Actor, resultado y reglas
 

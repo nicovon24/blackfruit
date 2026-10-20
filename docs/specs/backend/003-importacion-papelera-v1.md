@@ -83,6 +83,6 @@ Errores: versión obsoleta, registro ya movido/restaurado, cliente con asociacio
 
 Aceptación: mover una venta, ciclo o muestra a papelera excluye su efecto operativo sin perder relaciones; restaurar recupera el registro y revierte ese efecto; un cliente con ventas o muestras asociadas no puede eliminarse, incluso ante concurrencia; volver a importar una operación en papelera no la duplica; no hay acción de borrado físico desde la aplicación. El script de limpieza de ejemplos usa vista previa, permite solo entidades explícitas de desarrollo y rechaza producción o dependencias externas.
 
-Verificación: pruebas de integración, recorrido de escritorio y celular, typecheck/lint/build. Migración aditiva probada solo en dev/blackfruit. Para revertir el despliegue, restaurar los registros en papelera antes de volver a código que no filtra deletedAt; conservar las columnas. No desplegar a production en este corte.
+Verificación: pruebas de integración, recorrido de escritorio y celular, typecheck/lint/build. Migración aditiva probada en `dev/blackfruit` y en rama aislada antes de copiar el esquema a Neon `production` el 20/10/2026. Para revertir el despliegue, restaurar los registros en papelera antes de volver a código que no filtra `deletedAt`; conservar las columnas. Falta QA autenticado publicado.
 
 La creación y edición del catálogo de clientes/productos se detalla en [Agenda y catálogo](006-agenda-clientes-catalogo-v1.md). Esta sección contiene las reglas compartidas de eliminación reversible, restauración y procedencia.

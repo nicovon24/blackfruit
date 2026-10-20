@@ -28,7 +28,7 @@ Estados: agenda vacía, resultados, sin coincidencias, cargando búsqueda, diál
 
 ## Verificación del corte de edición
 
-El 19/10/2026, `tests/customer-edit-integration.ts` verificó datos normalizados, vínculo existente con venta y muestra, importe histórico intacto, auditoría, rechazo de versión vieja, datos inválidos y cliente en papelera. `tests/trash-browser.ts` verificó edición de escritorio/celular, error con borrador conservado, cancelar y confirmar el descarte. Pasaron typecheck, lint y build; no requiere migración ni está desplegado.
+El 19/10/2026, `tests/customer-edit-integration.ts` verificó datos normalizados, vínculo existente con venta y muestra, importe histórico intacto, auditoría, rechazo de versión vieja, datos inválidos y cliente en papelera. `tests/trash-browser.ts` verificó edición de escritorio/celular, error con borrador conservado, cancelar y confirmar el descarte. Pasaron typecheck, lint y build; no requiere migración. Se desplegó el 20/10/2026 y falta QA autenticado en la URL publicada.
 
 
 ## Catálogo de productos

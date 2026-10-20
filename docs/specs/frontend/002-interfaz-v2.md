@@ -1,6 +1,6 @@
 # Interfaz v2 — Plan integral de BlackFruit
 
-Estado: **implementación parcial en la rama `feature/produccion-muestras-3d`**. Fecha: 12/10/2026. Plan integral y registro de lo entregado en este mismo documento.
+Estado: **implementación parcial desplegada en Vercel Production el 20/10/2026**. Fecha del plan: 12/10/2026. Plan integral y registro de lo entregado en este mismo documento; falta QA autenticado en la URL publicada.
 Modo de superficie: Operate. Autoridad visual: interfaz existente y referencia visual privada mantenida fuera del repositorio. Revisión: [diagnóstico](../../revisiones/REVISION_UI_2026-10-12.md).
 
 ## Actor, resultado y decisiones

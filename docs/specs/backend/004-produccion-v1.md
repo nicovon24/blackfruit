@@ -1,8 +1,8 @@
 # Producción, máquinas y deshidratador 3D v1
 
-**Estado: implementado en `feature/produccion-muestras-3d`; migraciones verificadas en `dev/blackfruit`.** Pendiente de despliegue y validación con medidas de la máquina real.
+**Estado: desplegado en Vercel Production el 20/10/2026; migraciones verificadas en `dev/blackfruit`, en una rama aislada y en Neon `production`.** Pendiente de QA autenticado publicado y validación con medidas de la máquina real.
 
-**Actualización — 12/10/2026:** el usuario confirmó dos opciones dentro de Producción: **Dashboard** y **Máquina**. La reorganización y la adaptación del diseño de una referencia visual local están implementadas en la rama de funcionalidad y verificadas con datos QA en `dev/blackfruit`. Pendientes de despliegue y de contrastar proporciones con la máquina física.
+**Actualización — 12/10/2026:** el usuario confirmó dos opciones dentro de Producción: **Dashboard** y **Máquina**. La reorganización y la adaptación del diseño de una referencia visual local se verificaron con datos QA en `dev/blackfruit` y se desplegaron el 20/10/2026. Pendiente contrastar proporciones con la máquina física.
 
 ## Actor y resultado
 
