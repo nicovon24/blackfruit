@@ -26,4 +26,4 @@ Conservar la identidad existente: carbÃ³n, crema, superficies blancas, naranja
 Máquinas y Dashboard tienen accesos directos bajo Producción; Máquinas permite registrar ciclos y Dashboard consultar resultados. Operaciones de datos disponibles también sin 3D. Contexto de selección y consecuencias de cambios visibles; confirmación clara del guardado.
 
 ## Evidencia
-Decisiones expresadas por el usuario en la conversaciÃ³n y confirmaciÃ³n del 12/10/2026: Â«MÃ¡quina primeroÂ». Reglas detalladas en `docs/specs/backend/006-produccion-v1.md`, `docs/specs/backend/007-muestras-v1.md` e `docs/specs/backend/005-importacion-v1.md`. Propuesta de reorganizaciÃ³n pendiente en `docs/specs/frontend/002-interfaz-v2.md`.
+Decisiones expresadas por el usuario en la conversaciÃ³n y confirmaciÃ³n del 12/10/2026: Â«MÃ¡quina primeroÂ». Reglas detalladas en `docs/specs/backend/004-produccion-v1.md`, `docs/specs/backend/005-muestras-v1.md` e `docs/specs/backend/003-importacion-papelera-v1.md`. Propuesta de reorganizaciÃ³n pendiente en `docs/specs/frontend/002-interfaz-v2.md`.

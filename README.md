@@ -1,10 +1,14 @@
-﻿# BlackFruit
+# BlackFruit
 
 Aplicación privada para registrar ventas de frutas deshidratadas. Usa Next.js, Better Auth, Prisma y PostgreSQL en Neon.
 
 ## Estado
 
 El acceso requiere sesión y permiso de administrador. La app permite registrar ventas por importe, consultar el dashboard por mes, rango o histórico, gestionar y reutilizar clientes e importar ventas XLSX/CSV con revisión previa. Clientes tiene alta por diálogo; Productos tiene listado, alta, edición y archivo. La papelera reversible reúne ventas, clientes sin relaciones, ciclos y muestras. También se pueden configurar máquinas y catálogo, registrar ciclos con pesos individuales o agrupados, importar producción XLSX con revisión, consultar su dashboard y registrar muestras en un diálogo separado de ventas. El menú agrupa Comercial, Producción y Catálogo, con accesos directos al Dashboard de producción y a Máquinas; el visor 3D, el panel y la vista de bandejas muestran el mismo ciclo. Los formularios de fechas completas usan `dd/mm/yyyy`. Quedan pendientes el despliegue de este corte, la recuperación por correo, el alta manual de líneas de venta y un ensayo de restauración para el uso cotidiano.
+
+Clientes también permite editar nombre, teléfono y email desde su lista. La edición conserva las ventas y muestras asociadas y comprueba cambios concurrentes; ver [especificación de agenda](docs/specs/backend/006-agenda-clientes-catalogo-v1.md).
+
+La interfaz incluye controles y listados compartidos, diálogos adaptados a celular y temas claro/oscuro con un botón de icono para alternarlos en la barra superior y el acceso. La preferencia inicial puede seguir el sistema operativo y se guarda en el navegador con `next-themes`; no modifica datos del negocio. Ver [especificación general de interfaz](docs/specs/frontend/001-interfaz-v1.md) y [resultado del corte](docs/revisiones/PLAN_MEJORAS_2026-10-18.md#resultado-del-19102026).
 
 ## Desarrollo local
 
@@ -55,6 +59,10 @@ El ensayo de asociación de clientes existentes a ventas importadas se describe 
 La papelera se verifica con `npm run test:trash:integration` y `npm run test:trash:browser`. Para revisar ejemplos de producción que podría limpiar el script, ejecutar `npm run dev:cleanup-example`. Solo para ejecutar esa limpieza en la rama de desarrollo conocida: `npm run dev:cleanup-example -- --execute`. El script rechaza referencias externas al ejemplo; la vista previa no modifica datos. La aplicación no ofrece borrado definitivo.
 
 ## Diseño de interfaz con Codex
+
+La edición de Clientes, incluida en la especificación de agenda, se verifica con `node --env-file=.env.local --import tsx tests/customer-edit-integration.ts` y `npm run test:trash:browser`; ambas pruebas crean y limpian registros QA solo en `dev/blackfruit`.
+
+Con la app local iniciada, `node --env-file=.env.local --import tsx tests/ui-theme-browser.ts` comprueba temas, teclado, formularios y layouts a 1440/375 px. Requiere Chrome y `dev/blackfruit`; crea y limpia datos QA. Las capturas privadas y el reporte quedan en `tmp/ui-review/after/`, fuera de Git.
 
 Los skills locales [Impeccable](.agents/skills/impeccable/SKILL.md) (v4.5.2) y [UI UX Pro Max](.agents/skills/ui-ux-pro-max/SKILL.md) (v2.15.0) ayudan a diseñar, revisar y pulir las pantallas. Reiniciar Codex permite descubrirlos en una sesión nueva. Impeccable se instaló sin hook automático; su detector puede ejecutarse bajo demanda. UI UX Pro Max incluye una búsqueda local que usa Python. Ninguno es una dependencia de ejecución de la aplicación.
 

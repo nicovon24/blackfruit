@@ -2,13 +2,25 @@
 
 El desarrollo sigue especificación, implementación de una ruta completa y verificación. Los criterios observables están en `docs/specs/`.
 
+La [guía de especificaciones](specs/README.md) es el índice de fuentes canónicas. Esta actualización consolida en un solo spec las importaciones de ventas/muestras, producción y la papelera; combina la agenda de clientes con el catálogo y renumera los seis specs de backend consecutivamente del 001 al 006. La guía conserva las capacidades como secciones independientes con sus reglas y aceptación.
+
+## Corte: edición de clientes
+
+La edición de clientes se especifica junto a la [agenda](specs/backend/006-agenda-clientes-catalogo-v1.md): «Editar» en cada fila, diálogo precargado, validación, confirmación al descartar cambios, control de versión y auditoría. Los datos vinculados a ventas y muestras conservan el mismo cliente. Verificado con integración y navegador en `dev/blackfruit`, escritorio y celular, más typecheck/lint/build. Sin migración ni despliegue.
+
+## Corte: componentes editoriales y premium
+
+Implementado localmente el 19/10/2026 tras aprobar el plan. Base visual/listas, formularios/diálogos y temas Claro/Oscuro/Sistema conservan la identidad de BlackFruit. El [plan y resultado](revisiones/PLAN_MEJORAS_2026-10-18.md#corte-componentes-editoriales-y-premium), el [análisis previo](revisiones/REVISION_COMPONENTES_2026-10-18.md) y la [especificación general de interfaz](specs/frontend/001-interfaz-v1.md) registran el alcance. Revisión local a 1440/375 px en ambos temas, pruebas de teclado, errores, persistencia del tema y paginación; typecheck, lint y build correctos. Evidencia privada en `tmp/ui-review/`. Pendiente el control manual de zoom nativo y lectores de pantalla, además del QA publicado. Sin migraciones, push, merge ni despliegue; las pruebas usan y limpian datos temporales en `dev/blackfruit`.
+
+En el ajuste del 19/10/2026 el control quedó como un único botón de icono para alternar entre tema claro y oscuro, con nombre accesible y estado activo, en la barra superior y el acceso. Sistema se conserva como preferencia inicial.
+
 ## Corte de mejoras de uso y escala: 18/10/2026
 
 El [registro único del plan y su resultado](revisiones/PLAN_MEJORAS_2026-10-18.md) cubre formato `dd/mm/yyyy`, agenda de clientes, alta de muestras en diálogo, períodos automáticos, importación XLSX de producción y consultas acotadas. Implementado y verificado en `dev/blackfruit`; pendiente de despliegue. La caché persistente sigue condicionada a mediciones.
 
 ## Corte en curso: clientes, productos y papelera reversible
 
-Ver [especificación de clientes, catálogo y papelera](specs/backend/010-papelera-catalogo-v1.md). Clientes tiene alta por diálogo; Productos, acceso propio en el menú, alta y edición por diálogo; la papelera reúne ventas, clientes, ciclos y muestras con restauración. La navegación se organiza por tareas según la [especificación del sidebar](specs/frontend/004-navegacion-sidebar-v1.md). La limpieza física de ejemplos queda en un script restringido a desarrollo, con vista previa por defecto. Los tres ciclos, dos productos y la máquina DEMO se eliminaron de `dev/blackfruit` el 18/10/2026. La acción de borrado físico anterior de ventas se retiró. Migración aplicada en `dev/blackfruit`; pendiente de despliegue y de ensayo completo de restauración del entorno.
+Ver [especificación de importaciones y papelera](specs/backend/003-importacion-papelera-v1.md) y [agenda de clientes y catálogo](specs/backend/006-agenda-clientes-catalogo-v1.md). Clientes tiene alta por diálogo; Productos, acceso propio en el menú, alta y edición por diálogo; la papelera reúne ventas, clientes, ciclos y muestras con restauración. La navegación se organiza por tareas en la [especificación general de interfaz](specs/frontend/001-interfaz-v1.md). La limpieza física de ejemplos queda en un script restringido a desarrollo, con vista previa por defecto. Los tres ciclos, dos productos y la máquina DEMO se eliminaron de `dev/blackfruit` el 18/10/2026. La acción de borrado físico anterior de ventas se retiró. Migración aplicada en `dev/blackfruit`; pendiente de despliegue y de ensayo completo de restauración del entorno.
 
 Ensayo en `dev/blackfruit`: se crearon 26 clientes desde los nombres distintos de ventas importadas y se vincularon 32 ventas sin cliente. Se preservaron las filas de procedencia; no hubo coincidencias previas ni ventas en papelera. Reporte y ejecución protegida están en `scripts/preview-sales-customer-backfill.ts` y `scripts/backfill-sales-customers-dev.ts`. `production` no fue consultada ni modificada; requiere reporte y aprobación de mapeo propios antes de una ejecución.
 
@@ -47,10 +59,10 @@ Ajuste del visor solicitado el 12/10: barra con solo zoom y pantalla completa, a
 
 El visor admite deseleccionar la bandeja activa y volver a la cámara general. Pantalla completa amplía solo la máquina, con zoom y salida sobre el lienzo.
 
-El alcance detallado, los archivos afectados y los criterios de aceptación están en [Producción v1](specs/backend/006-produccion-v1.md). La referencia visual local aporta diseño e interacciones; catálogo, bandejas y pesos provienen de los datos guardados. Los resultados agrupados conservan su peso conjunto y los ciclos mantienen la configuración histórica del equipo.
+El alcance detallado, los archivos afectados y los criterios de aceptación están en [Producción v1](specs/backend/004-produccion-v1.md). La referencia visual local aporta diseño e interacciones; catálogo, bandejas y pesos provienen de los datos guardados. Los resultados agrupados conservan su peso conjunto y los ciclos mantienen la configuración histórica del equipo.
 
 La rama `dev/blackfruit` permite probar migraciones antes de aplicarlas a `production`. La URL agrupada es para la app; la directa, para migraciones. `neon deploy` solo configura Neon. Los secretos y el prototipo local quedan fuera del repositorio público.
 
-En producción, `ALLOWED_LOGIN_EMAILS` contiene los dos correos autorizados. Las cuentas se provisionan por separado; el registro público permanece cerrado. Ver [acceso limitado a dos correos](specs/backend/002-acceso-dos-correos-v1.md).
+En producción, `ALLOWED_LOGIN_EMAILS` contiene los dos correos autorizados. Las cuentas se provisionan por separado; el registro público permanece cerrado. Ver [acceso privado y allowlist](specs/backend/001-acceso-privado-v1.md).
 
 Para desplegar, consultar [ejecución y despliegue](specs/db/001-ejecucion-despliegue-v1.md), comprobar migraciones y permisos, configurar variables en Vercel y verificar el acceso. La restauración completa y la recuperación por correo siguen pendientes para uso cotidiano.

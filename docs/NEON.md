@@ -1,4 +1,4 @@
-﻿# Neon en BlackFruit
+# Neon en BlackFruit
 
 Usar ramas separadas para desarrollo y producción. `dev/blackfruit` se usa para implementar y probar migraciones; `production` sirve a la app publicada. Las URLs y el identificador del proyecto se guardan localmente y no se publican.
 

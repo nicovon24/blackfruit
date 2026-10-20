@@ -8,7 +8,7 @@ Una persona administradora autenticada registra una venta en pocos pasos, vuelve
 
 ## Actores y superficies
 
-- **Administrador:** crea, consulta, edita, anula, mueve a papelera y restaura ventas. La decisión vigente sobre papelera reversible está en la especificación 010.
+- **Administrador:** crea, consulta, edita, anula, mueve a papelera y restaura ventas. La decisión vigente sobre papelera reversible está en [Importación y papelera](003-importacion-papelera-v1.md).
 - **Pantallas:** listado, formulario breve, detalle/edición, papelera y dashboard.
 - **Servidor:** acciones de mutación y consultas que comprueban sesión y permiso; servicios de negocio para reglas y repositorios para PostgreSQL.
 
@@ -21,8 +21,8 @@ Una persona administradora autenticada registra una venta en pocos pasos, vuelve
 5. Los indicadores incluyen solo ventas `confirmed` y no borradas del período: suma de totales, número de operaciones, ticket promedio (cero sin operaciones) y clientes identificados distintos con `customer_id`.
 6. El nombre crudo de una fila importada se conserva en su procedencia. No se vincula automáticamente a un cliente por coincidencia de texto. Las muestras se registran en otra entidad y no aparecen en estos indicadores.
 7. Cada cambio registra actor, acción y fecha en auditoría. Las consultas y mutaciones verifican permisos en el servidor, incluidos endpoints y exportaciones.
-8. Nueva venta y detalle/edición abren en ventanas emergentes. Se puede seleccionar o crear cliente al guardar. Una venta importada con líneas permite actualizar fecha, cliente, canal y notas conservando total y líneas históricos.
-9. La papelera es reversible: mover y restaurar conservan líneas y procedencia, y comprueban versión. La aplicación no expone borrado definitivo de ventas; la decisión actual se detalla en la especificación 010.
+8. Nueva venta y detalle/edición abren en ventanas emergentes. Se puede elegir un cliente existente por ID, crear uno durante el alta o mantener «Sin cliente». La creación de cliente, el vínculo, la venta y auditoría se guardan de manera atómica; un reintento no duplica. Al quitar el cliente en una venta se elimina solo ese vínculo, nunca la persona. Editar un contacto desde la agenda conserva las asociaciones y actualiza el nombre consultado; ver [Agenda de clientes](006-agenda-clientes-catalogo-v1.md). Una venta importada con líneas permite actualizar fecha, cliente, canal y notas conservando total y líneas históricos.
+9. La papelera es reversible: mover y restaurar conservan líneas y procedencia, y comprueban versión. La aplicación no expone borrado definitivo de ventas; la decisión actual se detalla en [Importación y papelera](003-importacion-papelera-v1.md).
 
 ## Entradas, salidas y fallos
 
@@ -30,6 +30,15 @@ Una persona administradora autenticada registra una venta en pocos pasos, vuelve
 - **Consultar:** una operación o listado con filtros de fecha/estado y paginación; el dashboard devuelve agregados del mismo período.
 - **Fallos:** entrada incompleta o inválida con campo concreto, sesión ausente, permiso insuficiente, registro inexistente y conflicto de edición concurrente. Ningún fallo parcial debe dejar líneas o auditoría desalineadas.
 - **Reintento:** la creación manual no necesita referencia externa; la importación tendrá una clave idempotente propia en otra especificación. Un doble envío desde el formulario debe bloquearse o reconocerse de forma segura.
+
+La selección, alta contextual, homónimos, permisos del selector y vínculo en transacciones están detallados aquí porque son reglas de la venta. Crear un cliente durante un alta, la venta y sus auditorías es atómico; cualquier conflicto revierte toda la operación. `customers:read` protege la consulta de opciones y `customers:write` el alta, además de `sales:write` para la operación. IDs inválidos o inexistentes y campos inválidos producen error sin dejar datos parciales. Anular, mandar a papelera y restaurar no quitan el vínculo. Los compradores se cuentan como IDs distintos de ventas confirmadas y no borradas. La agenda y edición independiente del contacto se especifican en [Agenda y catálogo](006-agenda-clientes-catalogo-v1.md).
+
+### Verificación de clientes en ventas
+
+- [x] Crear un cliente con la venta, recargar y ver el vínculo; elegirlo en otra venta sin duplicarlo y contar una persona identificada.
+- [x] Editar la venta para cambiar o quitar el cliente sin borrar la persona; anular/restaurar conserva el vínculo.
+- [x] Rechazar ID/datos inválidos y un conflicto sin crear clientes extra; comprobar permisos.
+- [x] Verificar escritorio/celular, typecheck, lint, build e integración en el corte correspondiente.
 
 ## Datos y límites
 

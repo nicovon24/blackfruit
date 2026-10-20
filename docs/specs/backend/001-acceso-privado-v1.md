@@ -14,7 +14,9 @@ La persona administradora provisionada inicia sesión, accede al CRM y recupera 
 - La recuperación envía un enlace de un solo uso al email de la cuenta existente. La aplicación no debe revelar si un email está registrado.
 - Secretos, URL de base y credenciales de correo se configuran por entorno. `production` y `dev/blackfruit` usan secretos y conexiones distintos.
 - El origen de la app se determina por solicitud y se valida contra hosts permitidos; no se configura `APP_URL`. Ver [ejecución y despliegue](../db/001-ejecucion-despliegue-v1.md).
-- La lista de dos correos autorizados y la revocación de sesiones se detallan en [acceso limitado a dos correos](002-acceso-dos-correos-v1.md).
+- Las cuentas permitidas se provisionan por separado. En producción, `ALLOWED_LOGIN_EMAILS` debe contener exactamente dos direcciones completas, distintas y válidas, separadas por coma. Si falta o es inválida, se deniega el acceso a todos. En desarrollo se puede omitir para pruebas; si está configurada, también se aplica.
+- Se normalizan espacios y mayúsculas antes de comparar correos completos. No se autoriza por dominio o coincidencia parcial. La allowlist se comprueba al crear sesiones, en las rutas privadas y en cada mutación; quitar un correo revoca el acceso aunque conserve una cookie.
+- Una dirección permitida no crea una cuenta. Las cuentas tienen contraseña propia y rol `admin` en esta versión. El error de inicio de sesión es genérico y no revela quién está autorizado.
 
 ## Aceptación
 
@@ -24,6 +26,11 @@ La persona administradora provisionada inicia sesión, accede al CRM y recupera 
 - [ ] Inicio y cierre de sesión funcionan tras recargar.
 - [ ] Recuperación por correo y cambio de contraseña funcionan con el proveedor configurado; un enlace caducado o reutilizado se rechaza.
 - [ ] El proceso de alta, recuperación y auditoría no imprime secretos en logs.
+- [x] Una cuenta fuera de la lista no puede crear usuario ni sesión aunque tenga rol admin; una cookie se rechaza al retirar su correo. Las pruebas de desarrollo usan usuarios QA con la allowlist omitida.
+- [ ] En producción, solo las dos direcciones exactas de la allowlist, si tienen una cuenta provisionada y contraseña válida, pueden crear una sesión; correo sin cuenta o contraseña incorrecta no crea sesión.
+- [ ] Una allowlist ausente, mal formada o con direcciones repetidas mantiene producción cerrada; el mensaje de login es genérico.
+
+El ensayo de dos cuentas permitidas en producción sigue pendiente de ejecución controlada. La política y sus criterios son parte de este spec de acceso; no constituyen una capacidad aparte.
 
 ## Pendiente para uso real
 

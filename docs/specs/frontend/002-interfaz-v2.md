@@ -166,7 +166,7 @@ Estas secciones amplían la propuesta general anterior. La inspección adicional
 
 En celular, tarjetas de filas y editor enfocado en una fila; conservar encabezado de etapa, progreso y acción. Evitar una matriz completa de campos comprimidos.
 
-**Archivos:** `src/app/importar/import-wizard.tsx`, `editor-actions.ts`, `components/shared/import-dialog.tsx`, módulo imports. Alinear `../backend/005-importacion-v1.md` al implementar.
+**Archivos:** `src/app/importar/import-wizard.tsx`, `editor-actions.ts`, `components/shared/import-dialog.tsx`, módulo imports. Alinear `../backend/003-importacion-papelera-v1.md` al implementar.
 
 **Aceptación:** cambiar una fila entre Venta/Muestra respeta sus campos y reglas; un nombre no vincula automáticamente contactos; repetir confirmación no duplica; ningún dato desconocido se presenta como entrega confirmada; volver de un error conserva mapeo y correcciones; resumen final corresponde a lo persistido, sin contabilizar muestras como ventas.
 
@@ -180,7 +180,7 @@ En celular, tarjetas de filas y editor enfocado en una fila; conservar encabezad
 
 **Revisión (`/muestras/revision`, `/muestras/revision/[id]`):** lista de pendientes con origen y campos faltantes; detalle muestra fuente conservada y datos revisados separados. Guardar/converter usando el caso de uso actual, sin deducir identidad ni estado por nombre. Indicar cuándo la fila ya fue incorporada y permitir abrir el registro asociado.
 
-**Archivos:** rutas de muestras, `sample-form.tsx`, `customer-picker.tsx`, módulos samples/imports. Conservar la semántica de `../backend/007-muestras-v1.md`.
+**Archivos:** rutas de muestras, `sample-form.tsx`, `customer-picker.tsx`, módulos samples/imports. Conservar la semántica de `../backend/005-muestras-v1.md`.
 
 **Aceptación:** muestra pendiente se encuentra tras recargar; marcar entregada explícitamente actualiza las consultas correctas; error mantiene líneas; contactos homónimos se distinguen por datos disponibles; origen se conserva y conversión repetida no duplica; la pantalla diferencia cero contactos de todos con entrega y de búsqueda sin coincidencias.
 
@@ -192,9 +192,9 @@ Conservar el selector compartido: buscar, mostrar datos de contacto disponibles,
 
 Crear desde una venta mantiene la transacción y protección contra duplicados existentes. En Muestras, respetar su propio caso de uso y permisos; no asumir que la transacción de Ventas puede reutilizarse sin adaptación. Al cancelar creación, conservar la operación principal.
 
-**Archivos:** `components/shared/customer-picker.tsx`, casos de uso de customers/sales/samples. Referencia: `../backend/004-clientes-en-ventas-v1.md`.
+**Archivos:** `components/shared/customer-picker.tsx`, casos de uso de customers/sales/samples. Reglas de la venta: `../backend/002-ventas-v1.md`; agenda y edición de contactos: `../backend/006-agenda-clientes-catalogo-v1.md`.
 
-**Aceptación:** dos contactos con mismo nombre permanecen independientes; reintento no crea contactos extra; crear/quitar vínculo conserva fecha, importes o líneas del formulario. Una agenda independiente con edición/fusión de contactos queda fuera de este rediseño hasta especificar sus reglas.
+**Aceptación:** dos contactos con mismo nombre permanecen independientes; reintento no crea contactos extra; crear/quitar vínculo conserva fecha, importes o líneas del formulario. El alta y la edición independiente de la agenda se rigen por `../backend/006-agenda-clientes-catalogo-v1.md`; fusionar contactos sigue fuera del alcance.
 
 ### 8. Productos y variantes — `/productos`
 

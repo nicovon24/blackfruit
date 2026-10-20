@@ -17,6 +17,7 @@ Un administrador configura sus máquinas y registra una pasada después de termi
 - Cada bandeja admite un producto/variante o está vacía.
 - Peso individual: un resultado y una bandeja. Peso agrupado: un resultado y al menos dos bandejas del mismo producto y variante, del mismo ciclo. No se distribuye el peso entre bandejas.
 - Kg exactos con hasta tres decimales, no negativos. Ausencia de peso significa pendiente; cero es un peso confirmado. Se suma cada resultado una sola vez.
+- El Dashboard redondea los kilos a un máximo de dos decimales solo al mostrarlos, en resumen, historial y comparación. Los enteros aparecen sin decimales; se omiten ceros decimales finales. Las sumas, diferencias, registros y detalle conservan los tres decimales exactos; cada total se calcula antes de redondear.
 - Finalizar exige fecha real, al menos una bandeja cargada y todos los resultados completos. Un total cero confirmado es válido.
 - Corregir un finalizado conserva el último registro completo hasta guardar una corrección válida y atómica; no se convierte en borrador. Los cambios se auditan y controlan mediante versión.
 - La fecha real de finalización es DATE; el instante de confirmación es TIMESTAMPTZ. Los reportes usan la primera.
@@ -53,6 +54,7 @@ Las rutas reutilizan los enlaces existentes de creación y detalle. Los enlaces 
 - Filtros de período mensual y máquina, con opción de consultar todos los períodos o equipos. Resumen, desglose e historial comparten esos filtros; el período usa la fecha real de finalización.
 - Indicadores: kilos finales y cantidad de ciclos finalizados. Tabla de kilos por producto y variante.
 - Historial paginado: identificación, fecha de finalización, estado, máquina, productos y kilos. Abrir un ciclo lleva a la vista Máquina con ese registro seleccionado.
+- Cada ciclo finalizado o borrador ofrece «Enviar a papelera» desde su fila. La acción pide confirmación, comprueba la versión vigente y usa la papelera reversible; al completarse desaparece de las consultas operativas y puede restaurarse.
 - Borradores en una sección aparte, fuera de los kilos y del conteo de finalizados. Se filtran por máquina; el filtro de finalización no oculta registros incompletos sin fecha.
 - Comparación explícita de dos ciclos finalizados, con kilos por producto/variante, total de cada ciclo y diferencia. Los encabezados identifican también la máquina; se pueden comparar ciclos de equipos distintos.
 - Las tablas y el resumen se pueden consultar sin cargar el motor 3D.
@@ -118,7 +120,8 @@ Este cambio reutiliza máquinas, ciclos, bandejas y resultados existentes; no ne
 - Dos bandejas con un resultado de 0,875 kg suman 0,875 kg. Rechazar solapamientos, mezclas, referencias cruzadas, negativos y exceso de precisión.
 - Peso pendiente impide finalizar; 0,000 confirmado permite finalizar. Bandejas vacías no requieren peso.
 - Corrección concurrente falla sin modificar líneas ni auditoría; reintentar creación no duplica.
-- Comparación y resumen coinciden con resultados finalizados; fecha real determina el período.
+- Comparación y resumen coinciden con resultados finalizados; fecha real determina el período. El Dashboard muestra enteros sin decimales y el resto con un máximo de dos, tras calcular cada total exacto.
+- Enviar un ciclo finalizado o borrador a papelera desde el Dashboard lo retira de resumen e historial; restaurarlo recupera su estado y sus pesajes.
 - Tabla y 3D seleccionan la misma bandeja; el recorrido funciona en celular y sin WebGL.
 - Lectura y mutación sin permiso se rechazan en servidor.
 
