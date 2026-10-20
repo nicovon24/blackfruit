@@ -1,5 +1,7 @@
 "use client";
 
+import { Textarea } from "@/components/ui/textarea";
+
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -39,7 +41,7 @@ export function MachineForm({ machine, initialRequestKey }: { machine?: MachineV
       <div className="space-y-2"><Label htmlFor={`machine-trays-${machine?.id ?? "new"}`}>Cantidad de bandejas</Label><Input id={`machine-trays-${machine?.id ?? "new"}`} name="trayCount" type="number" min={1} max={MAX_MACHINE_TRAYS} step={1} required defaultValue={machine?.trayCount ?? 16} />{state.field === "trayCount" && <p role="alert" className="text-sm text-destructive">{state.message}</p>}</div>
       <div className="space-y-2"><Label htmlFor={`machine-model-${machine?.id ?? "new"}`}>Marca o modelo (opcional)</Label><Input id={`machine-model-${machine?.id ?? "new"}`} name="model" maxLength={100} defaultValue={machine?.model ?? ""} />{state.field === "model" && <p role="alert" className="text-sm text-destructive">{state.message}</p>}</div>
     </div>
-    <div className="space-y-2"><Label htmlFor={`machine-notes-${machine?.id ?? "new"}`}>Observaciones (opcional)</Label><textarea id={`machine-notes-${machine?.id ?? "new"}`} name="notes" maxLength={2000} rows={2} defaultValue={machine?.notes ?? ""} className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50" />{state.field === "notes" && <p role="alert" className="text-sm text-destructive">{state.message}</p>}</div>
+    <div className="space-y-2"><Label htmlFor={`machine-notes-${machine?.id ?? "new"}`}>Observaciones (opcional)</Label><Textarea id={`machine-notes-${machine?.id ?? "new"}`} name="notes" maxLength={2000} rows={2} defaultValue={machine?.notes ?? ""} className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50" />{state.field === "notes" && <p role="alert" className="text-sm text-destructive">{state.message}</p>}</div>
     {state.message && !state.field && <p role="alert" className="text-sm text-destructive">{state.message}</p>}
     {state.completed && <p role="status" className="text-sm text-olive">Máquina guardada.</p>}
     <Button type="submit" disabled={pending}>{pending ? "Guardando…" : machine ? "Guardar cambios" : "Agregar máquina"}</Button>

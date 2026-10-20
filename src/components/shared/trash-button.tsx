@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { changeTrashAction } from "@/app/papelera/actions";
 import type { TrashType } from "@/modules/trash/domain/trash";
 
-export function TrashButton({ type, id, version, restore = false, back }: { type: TrashType; id: string; version: number; restore?: boolean; back?: string }) {
+export function TrashButton({ type, id, version, restore = false, back, ariaLabel, subject }: { type: TrashType; id: string; version: number; restore?: boolean; back?: string; ariaLabel?: string; subject?: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
-  return <div><Button type="button" variant="outline" disabled={pending} onClick={() => {
-    if (!restore && !window.confirm("¿Enviar este registro a la papelera? Podrás restaurarlo más adelante.")) return;
+  return <div><Button type="button" variant="outline" aria-label={ariaLabel} disabled={pending} onClick={() => {
+    if (!restore && !window.confirm(`¿Enviar ${subject ?? "este registro"} a la papelera? Podrás restaurarlo más adelante.`)) return;
     setError("");
     startTransition(async () => {
       try {

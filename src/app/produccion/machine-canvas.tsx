@@ -1,5 +1,7 @@
 "use client";
 
+import { useTheme } from "next-themes";
+
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import { CanvasTexture, Group, MathUtils, PerspectiveCamera, RepeatWrapping, Vector3 } from "three";
@@ -113,6 +115,8 @@ const optionLabel = "inline-flex min-h-11 cursor-pointer items-center gap-2 text
 const optionInput = "size-4 accent-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 export function MachineCanvas({ trays, selectedPosition, onSelect, onContextLost, title = "Deshidratador", subtitle = "CICLO EN EDICIÓN", totalKg = null, pendingWeights = 0, summary = [], sidePanel }: { trays: SceneTray[]; selectedPosition: number | null; onSelect: (position: number | null) => void; onContextLost?: () => void; title?: string; subtitle?: string; totalKg?: string | null; pendingWeights?: number; summary?: Array<{ label: string; kg: string; color: string }>; sidePanel?: ReactNode }) {
+  const { resolvedTheme } = useTheme();
+  const dark = resolvedTheme === "dark";
   const viewport = useRef<HTMLDivElement>(null);
   const panelId = useId();
   const [doorOpen, setDoorOpen] = useState(true);
@@ -143,52 +147,52 @@ export function MachineCanvas({ trays, selectedPosition, onSelect, onContextLost
     try { window.localStorage.setItem(panelPreferenceKey, String(visible)); }
     catch { /* The panel still works when browser storage is unavailable. */ }
   }
-  return <div className="overflow-hidden rounded-xl border border-[#d9ddcf] bg-[#f8f7f2] text-[#273128] shadow-sm">
-    {!fullscreen && <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-[#d9ddcf] bg-white px-4 py-2 sm:px-5">
+  return <div className="overflow-hidden rounded-xl border border-border bg-muted text-foreground shadow-sm">
+    {!fullscreen && <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-border bg-surface px-4 py-2 sm:px-5">
       <p className="text-sm font-medium">Vista 3D · {trays.length} bandejas</p>
       {sidePanel && <label className={optionLabel}><input type="checkbox" className={optionInput} checked={panelOpen} aria-controls={panelId} onChange={(event) => changePanelVisibility(event.target.checked)} />Mostrar tu equipo</label>}
     </header>}
     <div className={sidePanel && panelOpen && !fullscreen ? "grid xl:grid-cols-[minmax(0,1fr)_300px]" : "grid"}>
-      <div className="min-w-0"><div ref={viewport} className={`relative w-full overflow-hidden bg-[radial-gradient(ellipse_at_50%_38%,#ffffff_0%,#eff1e9_78%)] ${fullscreen ? "h-dvh" : "h-[420px] md:h-[min(62vh,620px)]"}`}>
+      <div className="min-w-0"><div ref={viewport} className={`relative w-full overflow-hidden bg-[var(--machine-background)] ${fullscreen ? "h-dvh" : "h-[420px] md:h-[min(62vh,620px)]"}`}>
         <Canvas frameloop="demand" shadows="percentage" dpr={[1, 1.75]} camera={{ position: initialCameraPosition, fov: 35, near: 0.1, far: 80 }} gl={{ antialias: true, powerPreference: "high-performance" }} onCreated={({ gl }) => { gl.domElement.addEventListener("webglcontextlost", (event) => { event.preventDefault(); onContextLost?.(); }, { once: true }); }}>
-          <color attach="background" args={["#eff1e9"]} />
+          <color attach="background" args={[dark ? "#272c27" : "#eff1e9"]} />
           <hemisphereLight intensity={1.8} color="#fff8eb" groundColor="#64716b" />
           <directionalLight position={[4, 7, 5]} intensity={3.1} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
           <directionalLight position={[-4, 3, -2]} intensity={1.15} color="#d7ebef" />
           <pointLight position={[0, 2.8, 1.4]} intensity={0.8} color="#ffecc9" />
-          <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}><planeGeometry args={[100, 100]} /><meshStandardMaterial color="#e9e8df" roughness={0.94} /></mesh>
+          <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}><planeGeometry args={[100, 100]} /><meshStandardMaterial color={dark ? "#272c27" : "#e9e8df"} roughness={0.94} /></mesh>
           <Machine trays={trays} selectedPosition={selectedPosition} doorOpen={doorOpen} exploded={exploded} pieces={pieces} reducedMotion={reducedMotion} onSelect={selectTray} onHover={setHover} />
           <CameraControl zoom={zoom} focus={focus} selectedPosition={selectedPosition} fullscreen={fullscreen} />
         </Canvas>
-        {!fullscreen && <><div className="pointer-events-none absolute left-4 right-4 top-4 flex items-start justify-between gap-3"><div><p className="text-[10px] font-semibold tracking-[0.18em] text-[#646c60]">{subtitle}</p><h2 className="mt-1 font-serif text-xl sm:text-2xl">{title}</h2></div><div className="text-right"><strong className="block text-2xl font-normal tabular-nums">{totalKg === null ? "—" : totalKg}</strong><span className="text-xs text-[#646c60]">{totalKg === null ? "Sin pesajes" : "kg registrados"}</span></div></div>
-        {hover !== null && <p className="pointer-events-none absolute left-4 top-20 rounded-lg border border-[#d9ddcf] bg-white px-3 py-2 text-xs shadow">Bandeja {hover} · {trays.find((tray) => tray.position === hover)?.label ?? "Vacía"}</p>}
-        <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2"><span className="min-w-0 rounded-lg bg-white/95 px-3 py-2 text-xs shadow">{selected ? `Bandeja ${String(selected.position).padStart(2, "0")} · ${selected.label}` : "Vista general · tocá una bandeja para seleccionarla"}</span>{selected && <button type="button" className={`${tool} pointer-events-auto`} aria-label="Acercar bandeja" title="Acercar bandeja" onClick={() => setFocus((old) => ({ serial: old.serial + 1, position: selected.position, count: trays.length }))}><Focus size={18} aria-hidden="true" /></button>}</div></>}
+        {!fullscreen && <><div className="pointer-events-none absolute left-4 right-4 top-4 flex items-start justify-between gap-3"><div><p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground">{subtitle}</p><h2 className="mt-1 font-serif text-xl sm:text-2xl">{title}</h2></div><div className="text-right"><strong className="block text-2xl font-normal tabular-nums">{totalKg === null ? "—" : totalKg}</strong><span className="text-xs text-muted-foreground">{totalKg === null ? "Sin pesajes" : "kg registrados"}</span></div></div>
+        {hover !== null && <p className="pointer-events-none absolute left-4 top-20 rounded-lg border border-border bg-surface px-3 py-2 text-xs shadow">Bandeja {hover} · {trays.find((tray) => tray.position === hover)?.label ?? "Vacía"}</p>}
+        <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2"><span className="min-w-0 rounded-lg bg-surface/95 px-3 py-2 text-xs shadow">{selected ? `Bandeja ${String(selected.position).padStart(2, "0")} · ${selected.label}` : "Vista general · tocá una bandeja para seleccionarla"}</span>{selected && <button type="button" className={`${tool} pointer-events-auto`} aria-label="Acercar bandeja" title="Acercar bandeja" onClick={() => setFocus((old) => ({ serial: old.serial + 1, position: selected.position, count: trays.length }))}><Focus size={18} aria-hidden="true" /></button>}</div></>}
         {fullscreen && <div role="group" aria-label="Controles de pantalla completa" className="absolute bottom-4 right-4 flex gap-2">
           <button type="button" className={tool} aria-label="Alejar" title="Alejar" onClick={() => setZoom((old) => ({ serial: old.serial + 1, direction: -1 }))}><Minus size={18} aria-hidden="true" /></button>
           <button type="button" className={tool} aria-label="Acercar" title="Acercar" onClick={() => setZoom((old) => ({ serial: old.serial + 1, direction: 1 }))}><Plus size={18} aria-hidden="true" /></button>
           <button type="button" className={tool} aria-label="Salir de pantalla completa" title="Salir de pantalla completa" onClick={toggleFullscreen}><Minimize2 size={18} aria-hidden="true" /></button>
         </div>}
       </div>
-      {!fullscreen && <div role="group" className="flex items-center justify-center gap-2 border-t border-[#d9ddcf] px-3 py-3" aria-label="Controles del modelo">
+      {!fullscreen && <div role="group" className="flex items-center justify-center gap-2 border-t border-border px-3 py-3" aria-label="Controles del modelo">
         <button type="button" className={tool} aria-label="Alejar" title="Alejar" onClick={() => setZoom((old) => ({ serial: old.serial + 1, direction: -1 }))}><Minus size={18} aria-hidden="true" /></button>
         <button type="button" className={tool} aria-label="Acercar" title="Acercar" onClick={() => setZoom((old) => ({ serial: old.serial + 1, direction: 1 }))}><Plus size={18} aria-hidden="true" /></button>
         <button type="button" className={tool} aria-label={fullscreen ? "Salir de pantalla completa" : "Pantalla completa"} title={fullscreen ? "Salir de pantalla completa" : "Pantalla completa"} aria-pressed={fullscreen} onClick={toggleFullscreen}>{fullscreen ? <Minimize2 size={18} aria-hidden="true" /> : <Maximize2 size={18} aria-hidden="true" />}</button>
       </div>}
-      {!fullscreen && <details className="border-t border-[#d9ddcf] px-4 text-sm">
-        <summary className="min-h-11 cursor-pointer content-center text-[#48512c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Piezas visibles</summary>
+      {!fullscreen && <details className="border-t border-border px-4 text-sm">
+        <summary className="min-h-11 cursor-pointer content-center text-success focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Piezas visibles</summary>
         <div className="flex flex-wrap gap-x-6 pb-3">
           {([ ["door", "Puerta"], ["leftPanel", "Pared izquierda"], ["rightPanel", "Pared derecha"], ["roof", "Techo y controles"], ["rearPanel", "Panel trasero"] ] as Array<[PieceName, string]>).map(([name, label]) => <label key={name} className={optionLabel}><input type="checkbox" className={optionInput} checked={pieces[name]} onChange={(event) => setPiece(name, event.target.checked)} />{label}</label>)}
         </div>
-        <div className="flex flex-wrap gap-x-6 border-t border-[#d9ddcf] py-2">
+        <div className="flex flex-wrap gap-x-6 border-t border-border py-2">
           <label className={`${optionLabel} ${!pieces.door ? "cursor-not-allowed opacity-50" : ""}`}><input type="checkbox" className={optionInput} checked={doorOpen} disabled={!pieces.door} onChange={(event) => setDoorOpen(event.target.checked)} />Puerta abierta</label>
           <label className={optionLabel}><input type="checkbox" className={optionInput} checked={exploded} onChange={(event) => setExploded(event.target.checked)} />Bandejas separadas</label>
           <label className={optionLabel}><input type="checkbox" className={optionInput} checked={!pieces.rightPanel && !pieces.roof} onChange={(event) => { const visible = !event.target.checked; setPieces((old) => ({ ...old, rightPanel: visible, roof: visible })); }} />Ver interior</label>
         </div>
       </details>}
-      {!fullscreen && <p className="border-t border-[#d9ddcf] bg-[#f8f7f2] px-4 py-3 text-center text-xs text-[#646c60]">Arrastrá para girar · acercá con la rueda o dos dedos · tocá una bandeja</p>}
+      {!fullscreen && <p className="border-t border-border bg-muted px-4 py-3 text-center text-xs text-muted-foreground">Arrastrá para girar · acercá con la rueda o dos dedos · tocá una bandeja</p>}
       </div>
-      {sidePanel && !fullscreen && <aside id={panelId} aria-label="Tu equipo" hidden={!panelOpen} className="relative min-w-0 border-t border-[#d9ddcf] bg-white p-5 xl:border-l xl:border-t-0"><p className="mb-4 text-sm font-medium">Tu equipo</p>{sidePanel}</aside>}
+      {sidePanel && !fullscreen && <aside id={panelId} aria-label="Tu equipo" hidden={!panelOpen} className="relative min-w-0 border-t border-border bg-surface p-5 xl:border-l xl:border-t-0"><p className="mb-4 text-sm font-medium">Tu equipo</p>{sidePanel}</aside>}
     </div>
-    {!fullscreen && <footer className="flex flex-wrap items-center gap-3 border-t border-[#d9ddcf] bg-white px-5 py-4 text-xs"><strong className="mr-auto font-medium">Producción de este ciclo <span className="ml-2 font-normal text-[#646c60]">{trays.length} bandejas</span></strong>{summary.map((item) => <span key={item.label} className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full" style={{ background: item.color }} />{item.label} · {item.kg} kg</span>)}{pendingWeights > 0 && <span className="font-medium text-[#ad622d]">{pendingWeights} {pendingWeights === 1 ? "pesaje pendiente" : "pesajes pendientes"}</span>}</footer>}
+    {!fullscreen && <footer className="flex flex-wrap items-center gap-3 border-t border-border bg-surface px-5 py-4 text-xs"><strong className="mr-auto font-medium">Producción de este ciclo <span className="ml-2 font-normal text-muted-foreground">{trays.length} bandejas</span></strong>{summary.map((item) => <span key={item.label} className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full" style={{ background: item.color }} />{item.label} · {item.kg} kg</span>)}{pendingWeights > 0 && <span className="font-medium text-warning">{pendingWeights} {pendingWeights === 1 ? "pesaje pendiente" : "pesajes pendientes"}</span>}</footer>}
   </div>;
 }

@@ -116,7 +116,7 @@ export async function getCycle(id: string): Promise<CycleView | null> {
   };
 }
 
-export type CycleListItem = Pick<CycleView, "id" | "code" | "machineName" | "status" | "finishedOn" | "totalKg"> & { products: string[] };
+export type CycleListItem = Pick<CycleView, "id" | "code" | "machineName" | "status" | "finishedOn" | "totalKg" | "version"> & { products: string[] };
 
 function monthRange(month?: string) {
   if (!month || !/^\d{4}-(?:0[1-9]|1[0-2])$/.test(month)) return { month: null, from: undefined, to: undefined };
@@ -132,10 +132,10 @@ export async function listCycles(page = 1, machineId?: string, month?: string, s
     take: 31,
     skip: (Math.max(1, page) - 1) * 30,
     orderBy: [{ finishedOn: "desc" }, { createdAt: "desc" }, { id: "desc" }],
-    select: { id: true, code: true, machineName: true, status: true, finishedOn: true, results: { select: { productName: true, variant: true, kg: true } } },
+    select: { id: true, code: true, machineName: true, status: true, finishedOn: true, version: true, results: { select: { productName: true, variant: true, kg: true } } },
   });
   return { items: rows.slice(0, 30).map((row) => ({
-    id: row.id, code: row.code, machineName: row.machineName, status: row.status as "draft" | "finished", finishedOn: row.finishedOn?.toISOString().slice(0, 10) ?? "",
+    id: row.id, code: row.code, machineName: row.machineName, status: row.status as "draft" | "finished", finishedOn: row.finishedOn?.toISOString().slice(0, 10) ?? "", version: row.version,
     products: [...new Set(row.results.map((result) => `${result.productName}${result.variant ? ` · ${result.variant}` : ""}`))],
     totalKg: kgTotal(row.results.map((result) => result.kg?.toFixed(3) ?? null)),
   })), hasNext: rows.length > 30 };
