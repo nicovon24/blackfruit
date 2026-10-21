@@ -1,22 +1,28 @@
-# BlackFruit: guía de trabajo
+# BlackFruit: Working Guide
 
-BlackFruit es una aplicación privada para gestionar ventas de frutas deshidratadas. Leer `README.md`, `docs/CHECKLOG.md` y la especificación de la capacidad que se va a cambiar antes de implementar.
+BlackFruit is a private application for managing sales of dried fruit. Before implementing a change, read `README.md`, `docs/CHECKLOG.md`, and the specification for the capability being changed.
 
-## Desarrollo guiado por especificaciones (SDD)
+## Documentation and Product Language
 
-1. Registrar cada capacidad relevante en `docs/specs/` con actor, resultado, reglas, estados, datos, permisos, errores y criterios de aceptación observables. Las decisiones pendientes deben quedar explícitas; no inventar reglas del negocio.
-2. Implementar una ruta completa y pequeña: pantalla o entrada → caso de uso → persistencia → lectura. Mantener la especificación y el código alineados.
-3. Comprobar las reglas y fallos de mayor riesgo con pruebas de dominio o integración. Verificar `npm run typecheck`, `npm run lint` y `npm run build` antes de dar por terminado un corte funcional.
-4. Revisar el resultado contra los criterios de aceptación y actualizar los documentos cuando cambie una decisión. Usar las skills de ECC que correspondan al trabajo; ECC es una herramienta de ingeniería, no una dependencia de la aplicación.
-5. En cambios de interfaz, usar los skills locales `impeccable` y `ui-ux-pro-max` de `.agents/skills/`, conservar la identidad de BlackFruit y revisar el resultado en escritorio y celular.
+- Write and maintain all repository documentation in English, including `README.md`, `AGENTS.md`, product notes, specifications, check logs, reviews, and Markdown files in source folders. Translate existing Spanish prose when editing a document; do not add new Spanish documentation.
+- Spanish is reserved for the product's user-facing interface and for business data whose original language must be preserved, such as customer-entered names, imported spreadsheet content, and historical records. Keep exact Spanish UI labels in English documentation only when referring to the literal text shown in the app; explain their meaning in English.
+- Preserve code identifiers, file names, routes, commands, and source data as written. Do not translate or alter business data as part of a documentation change.
 
-## Límites del código y de los datos
+## Specification-Driven Development (SDD)
 
-- `src/app/` recibe solicitudes, valida sesión/permiso y delega. `src/modules/` contiene reglas y casos de uso; `src/lib/`, integraciones técnicas; `src/components/ui`, `layout` y `shared`, presentación.
-- El servidor calcula los totales. Usar importes decimales exactos; conservar precio y descripción de cada línea histórica. Una venta con varias líneas cuenta una sola vez.
-- Las muestras no son ventas. Una venta puede no tener cliente. Un nombre escrito en la planilla no identifica por sí solo a una persona.
-- El HTML de `design/` contiene nombres reales: mantenerlo fuera de `public/` y no exponer datos privados antes de contar con autorización en el servidor.
-- Desarrollar y probar migraciones en una rama de Neon distinta de `production`. `neon deploy` configura Neon; las migraciones del esquema son un proceso aparte.
+1. Document each relevant capability in `docs/specs/`, including actor, outcome, rules, states, data, permissions, errors, and observable acceptance criteria. Make undecided choices explicit; do not invent business rules.
+2. Implement a small, complete path: screen or entry point → use case → persistence → readback. Keep the specification and code aligned.
+3. Check high-risk rules and failures with domain or integration tests. Run `npm run typecheck`, `npm run lint`, and `npm run build` before considering a functional slice complete.
+4. Review the result against its acceptance criteria and update documents when a decision changes. Use the relevant ECC skills; ECC is an engineering tool, not an application dependency.
+5. For interface changes, use the local `impeccable` and `ui-ux-pro-max` skills in `.agents/skills/`, preserve BlackFruit's identity, and review desktop and mobile layouts.
+
+## Code and Data Boundaries
+
+- `src/app/` receives requests, validates sessions and permissions, and delegates. `src/modules/` contains business rules and use cases; `src/lib/` contains technical integrations; `src/components/ui`, `layout`, and `shared` contain presentation.
+- The server calculates totals. Use exact decimal amounts and preserve each historical line's price and description. A sale with multiple lines counts as one transaction.
+- Samples are not sales. A sale may have no customer. A name written in a spreadsheet does not by itself identify a person.
+- The HTML in `design/` contains real names: keep it out of `public/` and do not expose private data until server-side authorization is in place.
+- Develop and test migrations on a Neon branch other than `production`. `neon deploy` configures Neon; schema migrations are a separate process.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

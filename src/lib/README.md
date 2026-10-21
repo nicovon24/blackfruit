@@ -1,6 +1,3 @@
-# Integraciones compartidas
+# Shared Integrations
 
-Este directorio contiene el cliente Prisma y la configuración de Better Auth.
-Más adelante alojará el transporte de email y otras integraciones técnicas.
-Las reglas del negocio viven en `src/modules/`; `lib/` no decide si una
-operación es una venta o una muestra.
+This directory contains the Prisma client and Better Auth configuration. It may later host email transport and other technical integrations. Business rules belong in `src/modules/`; `lib/` does not decide whether an operation is a sale or a sample.

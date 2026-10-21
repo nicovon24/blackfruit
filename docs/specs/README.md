@@ -1,25 +1,25 @@
-# Especificaciones
+# Specifications
 
-Las especificaciones se agrupan por área y usan numeración local consecutiva con el formato `001-nombre.md`. Al consolidar o retirar documentos, renumerar los specs vigentes de esa categoría y actualizar todos sus enlaces. La numeración es independiente por carpeta.
+Specifications are grouped by area and use consecutive numbering within each category in the format `001-name.md`. When consolidating or retiring documents, renumber active specs in that category and update all links. Numbering is independent per folder.
 
-- [`backend/`](backend/): reglas, permisos, estados y criterios de aceptación de capacidades del servidor y del negocio.
-- [`frontend/`](frontend/): comportamiento y criterios de aceptación de interfaz.
-- [`db/`](db/): configuración y operación de base de datos y despliegue.
-- [`migrations/`](migrations/): cambios de esquema, orden de aplicación y reversión/recuperación.
-- [`bugs/`](bugs/): comportamiento esperado para defectos reproducibles y criterios de corrección.
+- [`backend/`](backend/): business and server capability rules, permissions, states, and acceptance criteria.
+- [`frontend/`](frontend/): interface behavior and acceptance criteria.
+- [`db/`](db/): database and deployment setup and operations.
+- [`migrations/`](migrations/): schema changes, application order, and rollback/recovery.
+- [`bugs/`](bugs/): expected behavior for reproducible defects and correction criteria.
 
-Los specs se mantienen como fuente de criterios de producto; los detalles de implementación pertenecen al código. Cuando una decisión de negocio esté pendiente, se deja explícita en el spec.
+Specs are the source of product criteria; implementation details belong in code. State undecided business choices explicitly rather than making assumptions.
 
-## Especificaciones canónicas
+## Canonical Specifications
 
-Para reducir documentos solapados, cada tema tiene un spec principal. Los cortes complementarios que se fusionaron viven dentro del que contiene la regla de negocio correspondiente; las notas de fecha y el resultado de implementación van en `docs/CHECKLOG.md` o `docs/revisiones/`.
+Each topic has one primary spec to reduce overlap. Merged complementary work lives in the spec containing the relevant business rule; dated notes and implementation results belong in `docs/CHECKLOG.md` or `docs/revisiones/`.
 
-- **Acceso y allowlist:** `backend/001-acceso-privado-v1.md`.
-- **Ventas y vínculo contextual de clientes:** `backend/002-ventas-v1.md`.
-- **Importación de ventas/muestras y producción, y papelera reversible:** `backend/003-importacion-papelera-v1.md`. Las capacidades conservan secciones, reglas y aceptación independientes.
-- **Producción y máquinas:** `backend/004-produccion-v1.md`.
-- **Muestras:** `backend/005-muestras-v1.md`.
-- **Agenda, datos de contacto, edición de clientes y catálogo:** `backend/006-agenda-clientes-catalogo-v1.md`.
-- **Navegación, componentes y temas compartidos:** `frontend/001-interfaz-v1.md`.
-- **Flujos y navegación de Interfaz v2:** `frontend/002-interfaz-v2.md`; conserva las decisiones y entregas específicas del rediseño.
-- **Fechas/períodos:** `frontend/003-fechas-periodos-v1.md`.
+- **Access and allowlist:** `backend/001-acceso-privado-v1.md`.
+- **Sales and contextual customer linking:** `backend/002-ventas-v1.md`.
+- **Sales/sample/production imports and reversible trash:** `backend/003-importacion-papelera-v1.md`. Each capability retains separate sections, rules, and acceptance criteria.
+- **Production and machines:** `backend/004-produccion-v1.md`.
+- **Samples:** `backend/005-muestras-v1.md`.
+- **Customer records, contact data, customer editing, and catalog:** `backend/006-agenda-clientes-catalogo-v1.md`.
+- **Navigation, components, and shared themes:** `frontend/001-interfaz-v1.md`.
+- **Interface v2 flows and navigation:** `frontend/002-interfaz-v2.md`; it preserves redesign-specific decisions and deliveries.
+- **Dates and periods:** `frontend/003-fechas-periodos-v1.md`.

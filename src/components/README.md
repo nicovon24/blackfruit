@@ -1,9 +1,7 @@
-# Componentes de interfaz
+# Interface Components
 
-- `ui/`: controles básicos de shadcn/ui, como botones y campos.
-- `layout/`: estructura común de páginas, navegación y encabezados.
-- `shared/`: componentes de presentación reutilizables entre pantallas.
+- `ui/`: basic shadcn/ui controls such as buttons and fields.
+- `layout/`: shared page structure, navigation, and headings.
+- `shared/`: presentation components reused across screens.
 
-Las reglas de ventas, importación y permisos viven en `src/modules/` y se
-comprueban en el servidor. Los componentes solo muestran datos y recogen
-interacciones.
+Sales, import, and permission rules live in `src/modules/` and are checked on the server. Components display data and collect interactions.
